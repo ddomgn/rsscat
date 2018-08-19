@@ -19,7 +19,9 @@
 package ddomgn.rsscat;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RssFeed {
+
     private final URL url;
 
     public RssFeed(URL url) {
@@ -77,10 +80,11 @@ public class RssFeed {
         RssChannel result = null;
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            if (endOf("rss", event))
+            if (endOf("rss", event)) {
                 break;
-            if (startOf("channel", event))
+            } else if (startOf("channel", event)) {
                 result = parseChannel(reader);
+            }
         }
         return result;
     }
@@ -92,30 +96,31 @@ public class RssFeed {
         List<RssItem> items = new ArrayList<>();
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            if (endOf("channel", event))
+            if (endOf("channel", event)) {
                 break;
-            if (startOf("title", event))
+            } else if (startOf("title", event)) {
                 title = nextEventData(reader, null);
-            if (startOf("link", event))
+            } else if (startOf("link", event)) {
                 link = nextEventData(reader, null);
-            if (startOf("description", event))
+            } else if (startOf("description", event)) {
                 description = nextEventData(reader, null);
-            if (startOf("language", event))
+            } else if (startOf("language", event)) {
                 language = nextEventData(reader, null);
-            if (startOf("pubdate", event))
+            } else if (startOf("pubdate", event)) {
                 pubDate = strToZonedDateTime(nextEventData(reader, null));
-            if (startOf("lastbuilddate", event))
+            } else if (startOf("lastbuilddate", event)) {
                 lastBuildDate = strToZonedDateTime(nextEventData(reader, null));
-            if (startOf("docs", event))
+            } else if (startOf("docs", event)) {
                 docs = nextEventData(reader, null);
-            if (startOf("generator", event))
+            } else if (startOf("generator", event)) {
                 generator = nextEventData(reader, null);
-            if (startOf("managingeditor", event))
+            } else if (startOf("managingeditor", event)) {
                 managingEditor = nextEventData(reader, null);
-            if (startOf("webmaster", event))
+            } else if (startOf("webmaster", event)) {
                 webMaster = nextEventData(reader, null);
-            if (startOf("item", event))
+            } else if (startOf("item", event)) {
                 items.add(parseItem(reader));
+            }
         }
         return new RssChannel(title, link, description, language, pubDate, lastBuildDate, docs, generator,
                 managingEditor, webMaster, items);
@@ -132,18 +137,19 @@ public class RssFeed {
         ZonedDateTime pubDate = null;
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            if (startOf("title", event))
+            if (startOf("title", event)) {
                 title = nextEventData(reader, null);
-            if (startOf("link", event))
+            } else if (startOf("link", event)) {
                 link = nextEventData(reader, null);
-            if (startOf("description", event))
+            } else if (startOf("description", event)) {
                 description = nextEventData(reader, "description");
-            if (startOf("pubdate", event))
+            } else if (startOf("pubdate", event)) {
                 pubDate = strToZonedDateTime(nextEventData(reader, null));
-            if (startOf("guid", event))
+            } else if (startOf("guid", event)) {
                 guid = nextEventData(reader, null);
-            if (endOf("item", event))
+            } else if (endOf("item", event)) {
                 break;
+            }
         }
         return new RssItem(title, link, description, pubDate, guid);
     }

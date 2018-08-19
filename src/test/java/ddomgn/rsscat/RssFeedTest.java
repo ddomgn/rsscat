@@ -18,14 +18,14 @@
  */
 package ddomgn.rsscat;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RssFeedTest {
 
@@ -35,10 +35,6 @@ class RssFeedTest {
     static void setUp() {
         URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
         feed = new RssFeed(url);
-    }
-
-    @AfterAll
-    static void tearDown() {
     }
 
     @Test
