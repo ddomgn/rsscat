@@ -19,16 +19,17 @@
 package ddomgn.rsscat;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 public class RssItem {
 
     public final String title;
     public final String link;
     public final String description;
-    public final ZonedDateTime pubDate;
-    public final String guid;
+    public final Optional<ZonedDateTime> pubDate;
+    public final Optional<String> guid;
 
-    RssItem(String title, String link, String description, ZonedDateTime pubDate, String guid) {
+    RssItem(String title, String link, String description, Optional<ZonedDateTime> pubDate, Optional<String> guid) {
         this.title = title;
         this.link = link;
         this.description = description;
