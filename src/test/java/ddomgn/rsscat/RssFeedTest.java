@@ -18,7 +18,6 @@
  */
 package ddomgn.rsscat;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,17 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RssFeedTest {
 
-    private static RssFeed feed;
-
-    @BeforeAll
-    static void setUp() {
-        URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
-        feed = new RssFeed(url);
-    }
-
     @Test
-    @DisplayName("Basic RSS feed test")
-    public void testBasicRss2Feed() throws Exception {
+    @DisplayName("RSS 2 feed test")
+    public void testRss2Feed() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
+        RssFeed feed = new RssFeed(url);
+
         RssChannel channel = feed.read();
         assertEquals("Liftoff News", channel.title);
         assertEquals("http://liftoff.msfc.nasa.gov/", channel.link);
