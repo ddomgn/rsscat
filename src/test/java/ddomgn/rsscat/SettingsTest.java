@@ -42,9 +42,9 @@ class SettingsTest {
     public void testShortHelpOption() {
         String[] args = { "-h" };
         Settings settings = new Settings();
-        assertFalse(settings.helpRequired());
+        assertFalse(settings.helpRequired);
         settings.parseCmdOptions(args);
-        assertTrue(settings.helpRequired());
+        assertTrue(settings.helpRequired);
     }
 
     @Test
@@ -52,9 +52,9 @@ class SettingsTest {
     public void testLongHelpOption() {
         String[] args = { "-help" };
         Settings settings = new Settings();
-        assertFalse(settings.helpRequired());
+        assertFalse(settings.helpRequired);
         settings.parseCmdOptions(args);
-        assertTrue(settings.helpRequired());
+        assertTrue(settings.helpRequired);
     }
 
     @Test
@@ -62,9 +62,9 @@ class SettingsTest {
     public void testLastDaysOption() {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
-        assertEquals(0, settings.lastDays());
+        assertEquals(0, settings.lastDays);
         settings.parseCmdOptions(args);
-        assertEquals(3, settings.lastDays());
+        assertEquals(3, settings.lastDays);
     }
 
     @Test
@@ -72,10 +72,10 @@ class SettingsTest {
     public void testFeedsUrls() throws Exception {
         String[] args = { "http://url1.org", "-help", "http://url2.org" };
         Settings settings = new Settings();
-        assertTrue(settings.feedUrls().isEmpty());
+        assertTrue(settings.feedUrls.isEmpty());
 
         settings.parseCmdOptions(args);
-        List<URL> feedUrls = settings.feedUrls();
+        List<URL> feedUrls = settings.feedUrls;
         assertEquals(2, feedUrls.size());
         assertEquals(new URL(args[0]), feedUrls.get(0));
         assertEquals(new URL(args[2]), feedUrls.get(1));

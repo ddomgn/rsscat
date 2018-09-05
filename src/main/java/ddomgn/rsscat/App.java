@@ -30,11 +30,11 @@ public class App {
     }
 
     private void doStuff(Settings settings) {
-        if (settings.helpRequired()) {
+        if (settings.helpRequired) {
             settings.printHelp();
             return;
         }
-        settings.feedUrls().stream().map(url -> {
+        settings.feedUrls.stream().map(url -> {
             try {
                 return new RssFeed(url).read();
             } catch (Exception e) {

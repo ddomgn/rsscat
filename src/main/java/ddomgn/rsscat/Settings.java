@@ -26,9 +26,9 @@ import static ddomgn.rsscat.Printer.printLine;
 
 class Settings {
 
-    private boolean helpRequired;
-    private int lastDays;
-    private final List<URL> feedUrls = new ArrayList<>();
+    boolean helpRequired;
+    int lastDays;
+    final List<URL> feedUrls = new ArrayList<>();
 
     void printHelp() {
         printLine(0, "rsscat: RSS reader with command line interface");
@@ -64,8 +64,4 @@ class Settings {
             }
         }
     }
-
-    boolean helpRequired() { return helpRequired; }
-    int lastDays() { return lastDays; }
-    List<URL> feedUrls() { return feedUrls; }
 }
