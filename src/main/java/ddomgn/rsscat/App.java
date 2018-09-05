@@ -57,6 +57,8 @@ public class App {
         printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
         printLine(0, "-h, -help");
         printLine(1, "Print help and exit");
+        printLine(0, "-last-days NUM");
+        printLine(1, "Print feed items published during NUM days");
     }
 
     private void printLine(int indent, String str) {
