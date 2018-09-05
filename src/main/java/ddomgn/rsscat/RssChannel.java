@@ -26,7 +26,7 @@ public class RssChannel {
 
     public final String title;
     public final String link;
-    public final String description;
+    public final Optional<String> description;
     public final Optional<String> language;
     public final Optional<ZonedDateTime> pubDate;
     public final Optional<ZonedDateTime> lastBuildDate;
@@ -36,7 +36,7 @@ public class RssChannel {
     public final Optional<String> webMaster;
     public final List<RssItem> items;
 
-    RssChannel(String title, String link, String description, Optional<String> language,
+    RssChannel(String title, String link, Optional<String> description, Optional<String> language,
                Optional<ZonedDateTime> pubDate, Optional<ZonedDateTime> lastBuildDate, Optional<String> docs,
                Optional<String> generator, Optional<String> managingEditor, Optional<String> webMaster,
                List<RssItem> items) {

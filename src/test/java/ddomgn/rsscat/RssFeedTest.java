@@ -18,12 +18,12 @@
  */
 package ddomgn.rsscat;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +39,7 @@ class RssFeedTest {
         RssChannel channel = feed.read();
         assertEquals("XML.com", channel.title);
         assertEquals("http://xml.com/pub", channel.link);
-        assertEquals("XML.com features a rich mix of information and services for the XML community.", channel.description);
+        assertEquals(Optional.of("XML.com features a rich mix of information and services for the XML community."), channel.description);
         assertFalse(channel.language.isPresent());
         assertFalse(channel.pubDate.isPresent());
         assertFalse(channel.lastBuildDate.isPresent());
@@ -59,6 +59,14 @@ class RssFeedTest {
     }
 
     @Test
+    @DisplayName("RSS 1 feed with empty description")
+    public void testRss1FeedWithEmptyDesc() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-1-empty-desc.xml");
+        RssChannel channel = new RssFeed(url).read();
+        assertFalse(channel.description.isPresent());
+    }
+
+    @Test
     @DisplayName("RSS 2 feed test")
     public void testRss2Feed() throws Exception {
         URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
@@ -67,7 +75,7 @@ class RssFeedTest {
         RssChannel channel = feed.read();
         assertEquals("Liftoff News", channel.title);
         assertEquals("http://liftoff.msfc.nasa.gov/", channel.link);
-        assertEquals("Liftoff to Space Exploration.", channel.description);
+        assertEquals(Optional.of("Liftoff to Space Exploration."), channel.description);
         assertEquals("en-us", channel.language.orElseThrow(Error::new));
         assertEquals(ZonedDateTime.parse("2003-06-10T04:00:00+00:00"), channel.pubDate.orElseThrow(Error::new));
         assertEquals(ZonedDateTime.parse("2003-06-10T09:41:01+00:00"), channel.lastBuildDate.orElseThrow(Error::new));
