@@ -39,17 +39,18 @@ abstract class XmlParser {
 
     String nextEventData(XMLEventReader reader, String untilEndTag) throws XMLStreamException {
         XMLEvent event = reader.nextEvent();
-        StringBuilder data = new StringBuilder(event.asCharacters().getData());
+        StringBuilder data = new StringBuilder(event.isCharacters() ? event.asCharacters().getData() : "");
         if (untilEndTag != null) {
             while (reader.hasNext()) {
                 event = reader.nextEvent();
-                if (event.isEndElement() && event.asEndElement().getName().toString().equals(untilEndTag)) {
+                if (isEndTag(untilEndTag, event)) {
                     break;
+                } else if (event.isCharacters()) {
+                    data.append(event.asCharacters().getData());
                 }
-                data.append(event.asCharacters().getData());
             }
         }
-        return data.toString();
+        return (data.length() > 0) ? data.toString() : null;
     }
 
     ZonedDateTime strToZonedDateTime(String str) {
