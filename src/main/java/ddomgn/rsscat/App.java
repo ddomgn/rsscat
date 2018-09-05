@@ -44,7 +44,7 @@ public class App {
             printLine(0, channel.title + ": " + channel.description);
             channel.items.forEach(item -> {
                 printLine(1, item.title);
-                printLine(2, item.pubDate.toLocalDateTime().toString());
+                item.pubDate.ifPresent(v -> printLine(2, v.toString()));
                 printLine(2, item.link);
             });
         });

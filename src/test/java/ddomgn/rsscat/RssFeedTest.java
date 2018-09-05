@@ -18,39 +18,63 @@
  */
 package ddomgn.rsscat;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RssFeedTest {
 
-    private static RssFeed feed;
+    @Test
+    @DisplayName("RSS 1 feed test")
+    public void testRss1Feed() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-1.xml");
+        RssFeed feed = new RssFeed(url);
 
-    @BeforeAll
-    static void setUp() {
-        URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
-        feed = new RssFeed(url);
+        RssChannel channel = feed.read();
+        assertEquals("XML.com", channel.title);
+        assertEquals("http://xml.com/pub", channel.link);
+        assertEquals("XML.com features a rich mix of information and services for the XML community.", channel.description);
+        assertFalse(channel.language.isPresent());
+        assertFalse(channel.pubDate.isPresent());
+        assertFalse(channel.lastBuildDate.isPresent());
+        assertFalse(channel.docs.isPresent());
+        assertFalse(channel.generator.isPresent());
+        assertFalse(channel.managingEditor.isPresent());
+        assertFalse(channel.webMaster.isPresent());
+
+        assertEquals(2, channel.items.size());
+        assertEquals("Processing Inclusions with XSLT", channel.items.get(0).title);
+        assertEquals("http://xml.com/pub/2000/08/09/xslt/xslt.html", channel.items.get(0).link);
+        assertEquals("Processing document inclusions with general XML tools can be problematic. This article proposes "
+                + "a way of preserving inclusion information through SAX-based processing.",
+                channel.items.get(0).description);
+        assertFalse(channel.items.get(0).pubDate.isPresent());
+        assertFalse(channel.items.get(0).guid.isPresent());
     }
 
     @Test
-    @DisplayName("Basic RSS feed test")
-    public void testBasicRss2Feed() throws Exception {
+    @DisplayName("RSS 2 feed test")
+    public void testRss2Feed() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
+        RssFeed feed = new RssFeed(url);
+
         RssChannel channel = feed.read();
         assertEquals("Liftoff News", channel.title);
         assertEquals("http://liftoff.msfc.nasa.gov/", channel.link);
         assertEquals("Liftoff to Space Exploration.", channel.description);
-        assertEquals("en-us", channel.language);
-        assertEquals(ZonedDateTime.parse("2003-06-10T04:00:00+00:00"), channel.pubDate);
-        assertEquals(ZonedDateTime.parse("2003-06-10T09:41:01+00:00"), channel.lastBuildDate);
-        assertEquals("http://blogs.law.harvard.edu/tech/rss", channel.docs);
-        assertEquals("Weblog Editor 2.0", channel.generator);
-        assertEquals("editor@example.com", channel.managingEditor);
-        assertEquals("webmaster@example.com", channel.webMaster);
+        assertEquals("en-us", channel.language.orElseThrow(Error::new));
+        assertEquals(ZonedDateTime.parse("2003-06-10T04:00:00+00:00"), channel.pubDate.orElseThrow(Error::new));
+        assertEquals(ZonedDateTime.parse("2003-06-10T09:41:01+00:00"), channel.lastBuildDate.orElseThrow(Error::new));
+        assertEquals("http://blogs.law.harvard.edu/tech/rss", channel.docs.orElseThrow(Error::new));
+        assertEquals("Weblog Editor 2.0", channel.generator.orElseThrow(Error::new));
+        assertEquals("editor@example.com", channel.managingEditor.orElseThrow(Error::new));
+        assertEquals("webmaster@example.com", channel.webMaster.orElseThrow(Error::new));
 
         assertEquals(4, channel.items.size());
         assertEquals("Star City", channel.items.get(0).title);
@@ -59,7 +83,7 @@ class RssFeedTest {
                 + "They take a crash course in culture, language and protocol at Russia's "
                 + "<a href=\"http://howe.iki.rssi.ru/GCTC/gctc_e.htm\">Star City</a>.",
                 channel.items.get(0).description);
-        assertEquals(ZonedDateTime.parse("2003-06-03T09:39:21+00:00"), channel.items.get(0).pubDate);
-        assertEquals("http://liftoff.msfc.nasa.gov/2003/06/03.html#item573", channel.items.get(0).guid);
+        assertEquals(ZonedDateTime.parse("2003-06-03T09:39:21+00:00"), channel.items.get(0).pubDate.orElseThrow(Error::new));
+        assertEquals("http://liftoff.msfc.nasa.gov/2003/06/03.html#item573", channel.items.get(0).guid.orElseThrow(Error::new));
     }
 }

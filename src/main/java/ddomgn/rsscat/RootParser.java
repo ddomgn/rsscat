@@ -19,27 +19,26 @@
 package ddomgn.rsscat;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import javax.xml.stream.events.XMLEvent;
 
-class RssFeed {
+class RootParser extends XmlParser implements Parser {
 
-    private final URL url;
-
-    RssFeed(URL url) { this.url = url; }
-
-    RssChannel read() throws ParseException, IOException {
-        RssChannel result;
-        try (InputStream inputStream = url.openStream()) {
-            XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
-            result = new RootParser().parse(reader);
-            reader.close();
+    @Override
+    public RssChannel parse(XMLEventReader reader) throws ParseException {
+        Parser specificParser = null;
+        try {
+            while (reader.hasNext() && specificParser == null) {
+                XMLEvent event = reader.nextEvent();
+                if (isStartTag("{http://www.w3.org/1999/02/22-rdf-syntax-ns#}RDF", event)) {
+                    specificParser = new Rss1Parser();
+                } else if (isStartTag("rss", event)) {
+                    specificParser = new Rss2Parser();
+                }
+            }
         } catch (XMLStreamException e) {
             throw new ParseException(e);
         }
-        return result;
+        return (specificParser == null) ? null : specificParser.parse(reader);
     }
 }
