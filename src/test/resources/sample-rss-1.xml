@@ -2,6 +2,7 @@
 
 <rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns="http://purl.org/rss/1.0/"
 >
 
@@ -31,12 +32,14 @@
     <title>Processing Inclusions with XSLT</title>
     <link>http://xml.com/pub/2000/08/09/xslt/xslt.html</link>
     <description>Processing document inclusions with general XML tools can be problematic. This article proposes a way of preserving inclusion information through SAX-based processing.</description>
+    <dc:date>2018-08-09T18:36:49Z</dc:date>
   </item>
 
   <item rdf:about="http://xml.com/pub/2000/08/09/rdfdb/index.html">
     <title>Putting RDF to Work</title>
     <link>http://xml.com/pub/2000/08/09/rdfdb/index.html</link>
     <description>Tool and API support for the Resource Description Framework is slowly coming of age. Edd Dumbill takes a look at RDFDB, one of the most exciting new RDF toolkits.</description>
+    <dc:date>2018-08-02T10:30:47Z</dc:date>
   </item>
 
 </rdf:RDF>

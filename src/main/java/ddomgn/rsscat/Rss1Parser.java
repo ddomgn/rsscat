@@ -23,6 +23,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,8 @@ public class Rss1Parser extends XmlParser implements Parser {
 
     private String inRdfNs(String tagName) { return "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}" + tagName; }
 
+    private String inDcNs(String tagName) { return "{http://purl.org/dc/elements/1.1/}" + tagName; }
+
     private String inDefaultNs(String tagName) { return "{http://purl.org/rss/1.0/}" + tagName; }
 
     private ChannelParseResult parseChannel(XMLEventReader reader) throws XMLStreamException {
@@ -106,6 +109,7 @@ public class Rss1Parser extends XmlParser implements Parser {
 
     private RssItem parseItem(XMLEventReader reader) throws XMLStreamException {
         String title = null, link = null, description = null;
+        Optional<ZonedDateTime> pubDate = Optional.empty();
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (isStartTag(inDefaultNs("title"), event)) {
@@ -114,10 +118,12 @@ public class Rss1Parser extends XmlParser implements Parser {
                 link = nextEventData(reader, null);
             } else if (isStartTag(inDefaultNs("description"), event)) {
                 description = nextEventData(reader, inDefaultNs("description"));
+            } else if (isStartTag(inDcNs("date"), event)) {
+                pubDate = Optional.of(strToZonedDateTime(nextEventData(reader, null)));
             } else if (isEndTag(inDefaultNs("item"), event)) {
                 break;
             }
         }
-        return new RssItem(title, link, description, Optional.empty(), Optional.empty());
+        return new RssItem(title, link, description, pubDate, Optional.empty());
     }
 }
