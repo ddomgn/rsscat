@@ -54,7 +54,9 @@ abstract class XmlParser {
     }
 
     ZonedDateTime strToZonedDateTime(String str) {
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(DateTimeFormatter.RFC_1123_DATE_TIME)
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendOptional(DateTimeFormatter.RFC_1123_DATE_TIME)
+                .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                 .toFormatter();
         return formatter.parse(str, ZonedDateTime::from);
     }

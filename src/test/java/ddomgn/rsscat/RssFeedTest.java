@@ -54,7 +54,7 @@ class RssFeedTest {
         assertEquals("Processing document inclusions with general XML tools can be problematic. This article proposes "
                 + "a way of preserving inclusion information through SAX-based processing.",
                 channel.items.get(0).description);
-        assertFalse(channel.items.get(0).pubDate.isPresent());
+        assertEquals(ZonedDateTime.parse("2018-08-09T18:36:49+00:00"), channel.items.get(0).pubDate.orElseThrow(Error::new));
         assertFalse(channel.items.get(0).guid.isPresent());
     }
 
