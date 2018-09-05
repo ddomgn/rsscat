@@ -80,9 +80,9 @@ class Rss2Parser extends XmlParser implements Parser {
                 items.add(parseItem(reader));
             }
         }
-        return new RssChannel(title, link, description, Optional.of(language), Optional.of(pubDate),
-                Optional.of(lastBuildDate), Optional.of(docs), Optional.of(generator),
-                Optional.of(managingEditor), Optional.of(webMaster), items);
+        return new RssChannel(title, link, description, Optional.ofNullable(language), Optional.ofNullable(pubDate),
+                Optional.ofNullable(lastBuildDate), Optional.ofNullable(docs), Optional.ofNullable(generator),
+                Optional.ofNullable(managingEditor), Optional.ofNullable(webMaster), items);
     }
 
     private RssItem parseItem(XMLEventReader reader) throws XMLStreamException {
