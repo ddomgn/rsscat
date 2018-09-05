@@ -58,6 +58,16 @@ class SettingsTest {
     }
 
     @Test
+    @DisplayName("Last days option")
+    public void testLastDaysOption() {
+        String[] args = { "-last-days", "3" };
+        Settings settings = new Settings();
+        assertEquals(0, settings.lastDays());
+        settings.parseCmdOptions(args);
+        assertEquals(3, settings.lastDays());
+    }
+
+    @Test
     @DisplayName("Feeds URLs")
     public void testFeedsUrls() throws Exception {
         String[] args = { "http://url1.org", "-help", "http://url2.org" };

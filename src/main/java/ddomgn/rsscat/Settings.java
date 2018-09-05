@@ -27,6 +27,7 @@ import static ddomgn.rsscat.Printer.printLine;
 class Settings {
 
     private boolean helpRequired;
+    private int lastDays;
     private final List<URL> feedUrls = new ArrayList<>();
 
     void printHelp() {
@@ -41,18 +42,21 @@ class Settings {
     }
 
     void parseCmdOptions(String[] args) {
-        for (String arg : args) {
-            switch (arg) {
+        for (int i = 0; i < args.length; i++) {
+            switch (args[i]) {
                 case "-h":
                 case "-help":
                     helpRequired = true;
                     break;
+                case "-last-days":
+                    lastDays = Integer.valueOf(args[++i]);
+                    break;
                 default:
-                    if (arg.charAt(0) == '-') {
-                        throw new UnsupportedOperationException("Unknown option " + arg);
+                    if (args[i].charAt(0) == '-') {
+                        throw new UnsupportedOperationException("Unknown option " + args[i]);
                     } else {
                         try {
-                            feedUrls.add(new URL(arg));
+                            feedUrls.add(new URL(args[i]));
                         } catch (MalformedURLException e) {
                             throw new Error(e);
                         }
@@ -62,5 +66,6 @@ class Settings {
     }
 
     boolean helpRequired() { return helpRequired; }
+    int lastDays() { return lastDays; }
     List<URL> feedUrls() { return feedUrls; }
 }
