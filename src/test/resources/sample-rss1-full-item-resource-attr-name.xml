@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:syn="http://purl.org/rss/1.0/modules/syndication/" xmlns="http://purl.org/rss/1.0/">
+<channel rdf:about="http://www.fsf.org/news/aggregator/RSS">
+  <title>FSF News</title>
+  <link>http://www.fsf.org/news/aggregator</link>
+  <description></description>
+  <image rdf:resource="http://www.fsf.org/logo.png"/>
+  <items>
+    <rdf:Seq>
+        <rdf:li rdf:resource="http://www.fsf.org/news/fsf-job-opportunity-business-operations-manager"/>
+    </rdf:Seq>
+  </items>
+</channel>
+  <item rdf:about="http://www.fsf.org/news/fsf-job-opportunity-business-operations-manager">
+    <title>FSF job opportunity: Business operations manager</title>
+    <link>http://www.fsf.org/news/fsf-job-opportunity-business-operations-manager</link>
+    <description>The Free Software Foundation (FSF), a Massachusetts 501(c)(3) charity with a worldwide mission to protect computer user freedom, seeks a motivated and talented Boston-based individual to be our full-time Business Operations Manager.
+</description>
+    <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/"><![CDATA[<p>This position, reporting to the executive director, works as part of our operations team to ensure the organization's financial, human resources, and administrative functions run smoothly and in compliance with all legal and policy requirements. We are looking for a hands-on and detail-oriented professional who is comfortable working independently and with multiple teams, including some remote coworkers. Ideal candidates will be proactive and highly adaptable, with an aptitude for learning new tools and coming up with creative solutions. Applicants should have at least three years of experience with bookkeeping and nonprofit operations; human resources experience a plus.</p>>]]></content:encoded>
+    <dc:publisher>No publisher</dc:publisher>
+    <dc:creator></dc:creator>
+    <dc:rights></dc:rights>
+    <dc:date>2018-08-09T18:36:49Z</dc:date>
+    <dc:type>News Item</dc:type>
+  </item>
+</rdf:RDF>

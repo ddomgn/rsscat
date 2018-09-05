@@ -67,6 +67,13 @@ class RssFeedTest {
     }
 
     @Test
+    @DisplayName("RSS 1 feed with full item resource name")
+    public void testRss1FeedWithFullItemResourcename() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss1-full-item-resource-attr-name.xml");
+        new RssFeed(url).read();
+    }
+
+    @Test
     @DisplayName("RSS 2 feed test")
     public void testRss2Feed() throws Exception {
         URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");

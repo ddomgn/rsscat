@@ -23,10 +23,8 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Rss1Parser extends XmlParser implements Parser {
 
@@ -95,8 +93,12 @@ public class Rss1Parser extends XmlParser implements Parser {
             if (isEndTag(inDefaultNs("items"), event)) {
                 break;
             } else if (isStartTag(inRdfNs("li"), event)) {
-                Attribute resource = event.asStartElement().getAttributeByName(QName.valueOf("resource"));
-                result.add(resource.getValue());
+                List<String> resourceAttrValues = Arrays.stream(new String[]{"resource", inRdfNs("resource")})
+                        .map(attrName -> event.asStartElement().getAttributeByName(QName.valueOf(attrName)))
+                        .filter(Objects::nonNull)
+                        .map(Attribute::getValue)
+                        .collect(Collectors.toList());
+                result.addAll(resourceAttrValues);
             }
         }
         return result;
