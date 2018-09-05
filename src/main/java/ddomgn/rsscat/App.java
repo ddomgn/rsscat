@@ -18,6 +18,7 @@
  */
 package ddomgn.rsscat;
 
+import static ddomgn.rsscat.Printer.printLine;
 import static java.lang.System.out;
 
 public class App {
@@ -30,7 +31,7 @@ public class App {
 
     private void doStuff(Settings settings) {
         if (settings.helpRequired()) {
-            printHelp();
+            settings.printHelp();
             return;
         }
         settings.feedUrls().stream().map(url -> {
@@ -41,28 +42,12 @@ public class App {
             }
         }).forEach(channel -> {
             out.println();
-            printLine(0, channel.title + ": " + channel.description);
+            Printer.printLine(0, channel.title + ": " + channel.description);
             channel.items.forEach(item -> {
                 printLine(1, item.title);
                 item.pubDate.ifPresent(v -> printLine(2, v.toString()));
                 printLine(2, item.link);
             });
         });
-    }
-
-    private void printHelp() {
-        printLine(0, "rsscat: RSS reader with command line interface");
-        printLine(0, "Usage:");
-        printLine(1, "java -jar rsscat -h");
-        printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
-        printLine(0, "-h, -help");
-        printLine(1, "Print help and exit");
-        printLine(0, "-last-days NUM");
-        printLine(1, "Print feed items published during NUM days");
-    }
-
-    private void printLine(int indent, String str) {
-        for (int i = 0; i < indent; i++) out.print("    ");
-        out.println(str);
     }
 }

@@ -22,25 +22,37 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import static ddomgn.rsscat.Printer.printLine;
 
-public class Settings {
+class Settings {
 
     private boolean helpRequired;
     private final List<URL> feedUrls = new ArrayList<>();
 
-    public void parseCmdOptions(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
+    void printHelp() {
+        printLine(0, "rsscat: RSS reader with command line interface");
+        printLine(0, "Usage:");
+        printLine(1, "java -jar rsscat -h");
+        printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
+        printLine(0, "-h, -help");
+        printLine(1, "Print help and exit");
+        printLine(0, "-last-days NUM");
+        printLine(1, "Print feed items published during NUM days");
+    }
+
+    void parseCmdOptions(String[] args) {
+        for (String arg : args) {
+            switch (arg) {
                 case "-h":
                 case "-help":
                     helpRequired = true;
                     break;
                 default:
-                    if (args[i].charAt(0) == '-') {
-                        throw new UnsupportedOperationException("Unknown option " + args[i]);
+                    if (arg.charAt(0) == '-') {
+                        throw new UnsupportedOperationException("Unknown option " + arg);
                     } else {
                         try {
-                            feedUrls.add(new URL(args[i]));
+                            feedUrls.add(new URL(arg));
                         } catch (MalformedURLException e) {
                             throw new Error(e);
                         }
@@ -49,6 +61,6 @@ public class Settings {
         }
     }
 
-    public boolean helpRequired() { return helpRequired; }
-    public List<URL> feedUrls() { return feedUrls; }
+    boolean helpRequired() { return helpRequired; }
+    List<URL> feedUrls() { return feedUrls; }
 }
