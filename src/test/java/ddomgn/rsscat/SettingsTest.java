@@ -62,7 +62,7 @@ class SettingsTest {
     public void testLastDaysOption() {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
-        assertEquals(0, settings.lastDays);
+        assertEquals(Integer.MAX_VALUE, settings.lastDays);
         settings.parseCmdOptions(args);
         assertEquals(3, settings.lastDays);
     }

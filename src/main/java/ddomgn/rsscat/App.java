@@ -18,6 +18,8 @@
  */
 package ddomgn.rsscat;
 
+import java.time.ZonedDateTime;
+
 import static ddomgn.rsscat.Printer.printLine;
 import static java.lang.System.out;
 
@@ -30,6 +32,7 @@ public class App {
     }
 
     private void doStuff(Settings settings) {
+        ZonedDateTime fromDateTime = ZonedDateTime.now().minusDays(settings.lastDays);
         if (settings.helpRequired) {
             settings.printHelp();
             return;
@@ -43,11 +46,15 @@ public class App {
         }).forEach(channel -> {
             out.println();
             Printer.printLine(0, channel.title + ": " + channel.description);
-            channel.items.forEach(item -> {
-                printLine(1, item.title);
-                item.pubDate.ifPresent(v -> printLine(2, v.toString()));
-                printLine(2, item.link);
-            });
+            channel.items.stream()
+                    .filter(item -> 0 <= item.pubDate.orElseGet(ZonedDateTime::now).compareTo(fromDateTime))
+                    .forEach(this::printItem);
         });
+    }
+
+    private void printItem(RssItem item) {
+        printLine(1, item.title);
+        item.pubDate.ifPresent(v -> printLine(2, v.toString()));
+        printLine(2, item.link);
     }
 }

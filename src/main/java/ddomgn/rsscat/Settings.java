@@ -27,7 +27,7 @@ import static ddomgn.rsscat.Printer.printLine;
 class Settings {
 
     boolean helpRequired;
-    int lastDays;
+    int lastDays = Integer.MAX_VALUE;
     final List<URL> feedUrls = new ArrayList<>();
 
     void printHelp() {
