@@ -45,7 +45,7 @@ public class App {
             }
         }).forEach(channel -> {
             out.println();
-            Printer.printLine(0, channel.title + ": " + channel.description);
+            Printer.printLine(0, channel.title + channel.description.map(v -> ": " + v).orElse(""));
             channel.items.stream()
                     .filter(item -> 0 <= item.pubDate.orElseGet(ZonedDateTime::now).compareTo(fromDateTime))
                     .forEach(this::printItem);
