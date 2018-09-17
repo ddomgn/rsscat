@@ -58,7 +58,7 @@ abstract class XmlParser {
                 .appendOptional(DateTimeFormatter.RFC_1123_DATE_TIME)
                 .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                 .toFormatter();
-        return formatter.parse(str, ZonedDateTime::from);
+        return formatter.parse(str.replaceAll("[^\\p{Print}]", "").trim(), ZonedDateTime::from);
     }
 
     private boolean nameEquals(QName name, String value) {

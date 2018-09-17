@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <link>http://www.linux.org.ru/</link>
+    <language>ru</language>
+    <title>Linux.org.ru: Новости</title>
+    <description>Linux.org.ru: Новости</description>
+    <pubDate>
+      Mon, 17 Sep 2018 15:22:21 +0300</pubDate>
+  <item>
+      <author>Twissel</author>
+      <link>https://www.linux.org.ru/news/security/14476515</link>
+      <guid>https://www.linux.org.ru/news/security/14476515</guid>
+      <title>Компрометация репозиториев проекта Kodi</title>
+      <pubDate>
+      Sun, 16 Sep 2018 16:41:06 +0300</pubDate>
+<description><![CDATA[
+  <p>Как сообщает компания <a href="https://twitter.com/ESET/status/1040685730039775232">ESET</a> в репозиториях проекта <a href="https://kodi.tv/">Kodi</a> (в прошлом XBMC) были обнаружены  вредоносные дополнения для скрытого майнинга криптовалюты. 
+</p><p>( <a href="https://www.linux.org.ru/news/security/14476515#cut0">читать дальше...</a> )</p>
+      <p class="tags"><i class="icon-tag"></i>&nbsp;<a class=tag rel=tag href="/tag/kodi">kodi</a>, <a class=tag rel=tag href="/tag/monero">monero</a>, <a class=tag rel=tag href="/tag/xbmc">xbmc</a>, <a class=tag rel=tag href="/tag/%D0%BC%D0%B0%D0%B9%D0%BD%D0%B8%D0%BD%D0%B3">майнинг</a>, <a class=tag rel=tag href="/tag/%D1%80%D0%B5%D1%88%D0%B5%D1%82%D0%BE">решето</a></p>
+  
+]]>
+</description></item>
+  </channel>
+</rss>

@@ -109,4 +109,11 @@ class RssFeedTest {
         RssChannel channel = new RssFeed(url).read();
         assertEquals("Who’s Behind the Screencam Extortion Scam?", channel.items.get(0).title);
     }
+
+    @Test
+    @DisplayName("RSS 2 feed with new line in date")
+    public void testRss2FeedWithNewLineInDate() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-2-with-newline-in-date.xml");
+        new RssFeed(url).read();
+    }
 }
