@@ -19,6 +19,8 @@
 package ddomgn.rsscat;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ddomgn.rsscat.Printer.printLine;
 import static java.lang.System.out;
@@ -44,11 +46,14 @@ public class App {
                 throw new Error(e);
             }
         }).forEach(channel -> {
-            out.println();
-            Printer.printLine(0, channel.title + channel.description.map(v -> ": " + v).orElse(""));
-            channel.items.stream()
+            List<RssItem> itemsToShow = channel.items.stream()
                     .filter(item -> 0 <= item.pubDate.orElseGet(ZonedDateTime::now).compareTo(fromDateTime))
-                    .forEach(this::printItem);
+                    .collect(Collectors.toList());
+            if (!itemsToShow.isEmpty() || settings.showEmptyFeeds) {
+                out.println();
+                Printer.printLine(0, channel.title + channel.description.map(v -> ": " + v).orElse(""));
+                itemsToShow.forEach(this::printItem);
+            }
         });
     }
 

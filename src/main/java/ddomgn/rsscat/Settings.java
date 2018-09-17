@@ -26,6 +26,7 @@ import static ddomgn.rsscat.Printer.printLine;
 
 class Settings {
 
+    boolean showEmptyFeeds;
     boolean helpRequired;
     int lastDays = Integer.MAX_VALUE;
     final List<URL> feedUrls = new ArrayList<>();
@@ -35,6 +36,8 @@ class Settings {
         printLine(0, "Usage:");
         printLine(1, "java -jar rsscat -h");
         printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
+        printLine(0, "-e");
+        printLine(1, "Show empty feeds");
         printLine(0, "-h, -help");
         printLine(1, "Print help and exit");
         printLine(0, "-last-days NUM");
@@ -44,6 +47,9 @@ class Settings {
     void parseCmdOptions(String[] args) {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
+                case "-e":
+                    showEmptyFeeds = true;
+                    break;
                 case "-h":
                 case "-help":
                     helpRequired = true;
