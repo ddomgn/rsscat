@@ -18,6 +18,11 @@
  */
 package ddomgn.rsscat;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static ddomgn.rsscat.Printer.printLine;
 import static java.lang.System.out;
 
 public class App {
@@ -29,38 +34,32 @@ public class App {
     }
 
     private void doStuff(Settings settings) {
-        if (settings.helpRequired()) {
-            printHelp();
+        ZonedDateTime fromDateTime = ZonedDateTime.now().minusDays(settings.lastDays);
+        if (settings.helpRequired) {
+            settings.printHelp();
             return;
         }
-        settings.feedUrls().stream().map(url -> {
+        settings.feedUrls.stream().map(url -> {
             try {
                 return new RssFeed(url).read();
             } catch (Exception e) {
                 throw new Error(e);
             }
         }).forEach(channel -> {
-            out.println();
-            printLine(0, channel.title + ": " + channel.description);
-            channel.items.forEach(item -> {
-                printLine(1, item.title);
-                printLine(2, item.pubDate.toLocalDateTime().toString());
-                printLine(2, item.link);
-            });
+            List<RssItem> itemsToShow = channel.items.stream()
+                    .filter(item -> 0 <= item.pubDate.orElseGet(ZonedDateTime::now).compareTo(fromDateTime))
+                    .collect(Collectors.toList());
+            if (!itemsToShow.isEmpty() || settings.showEmptyFeeds) {
+                out.println();
+                Printer.printLine(0, channel.title + channel.description.map(v -> ": " + v).orElse(""));
+                itemsToShow.forEach(this::printItem);
+            }
         });
     }
 
-    private void printHelp() {
-        printLine(0, "rsscat: RSS reader with command line interface");
-        printLine(0, "Usage:");
-        printLine(1, "java -jar rsscat -h");
-        printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
-        printLine(0, "-h, -help");
-        printLine(1, "Print help and exit");
-    }
-
-    private void printLine(int indent, String str) {
-        for (int i = 0; i < indent; i++) out.print("    ");
-        out.println(str);
+    private void printItem(RssItem item) {
+        printLine(1, item.title);
+        item.pubDate.ifPresent(v -> printLine(2, v.toString()));
+        printLine(2, item.link);
     }
 }

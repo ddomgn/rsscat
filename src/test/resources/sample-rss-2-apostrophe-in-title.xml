@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Krebs on Security</title>
+	<atom:link href="https://krebsonsecurity.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://krebsonsecurity.com</link>
+	<description>In-depth security news and investigation</description>
+	<lastBuildDate>Tue, 11 Sep 2018 20:35:27 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=4.9.8</generator>
+
+    <item>
+    <title>Who&#8217;s Behind the Screencam Extortion Scam?</title>
+    <link>https://krebsonsecurity.com/2018/08/whos-behind-the-screencam-extortion-scam/</link>
+    <comments>https://krebsonsecurity.com/2018/08/whos-behind-the-screencam-extortion-scam/#comments</comments>
+    <pubDate>Sat, 25 Aug 2018 23:35:40 +0000</pubDate>
+    <dc:creator><![CDATA[BrianKrebs]]></dc:creator>
+
+    <guid isPermaLink="false">https://krebsonsecurity.com/?p=44825</guid>
+    <description><![CDATA[The sextortion email scam last month that invoked a real password used by each recipient and threatened to release embarrassing Webcam videos almost certainly was not the work of one criminal or even one group of criminals. Rather, it's likely that additional spammers and scammers piled on with their own versions of the phishing email after noticing that some recipients were actually paying up. The truth is we may never find out who's responsible, but it's still fun to follow some promising early leads and see where they take us.]]></description>
+        <wfw:commentRss>https://krebsonsecurity.com/2018/08/whos-behind-the-screencam-extortion-scam/feed/</wfw:commentRss>
+    <slash:comments>36</slash:comments>
+    </item>
+</channel>
+</rss>

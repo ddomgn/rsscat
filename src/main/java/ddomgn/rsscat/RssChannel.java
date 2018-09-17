@@ -20,24 +20,26 @@ package ddomgn.rsscat;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class RssChannel {
 
     public final String title;
     public final String link;
-    public final String description;
-    public final String language;
-    public final ZonedDateTime pubDate;
-    public final ZonedDateTime lastBuildDate;
-    public final String docs;
-    public final String generator;
-    public final String managingEditor;
-    public final String webMaster;
+    public final Optional<String> description;
+    public final Optional<String> language;
+    public final Optional<ZonedDateTime> pubDate;
+    public final Optional<ZonedDateTime> lastBuildDate;
+    public final Optional<String> docs;
+    public final Optional<String> generator;
+    public final Optional<String> managingEditor;
+    public final Optional<String> webMaster;
     public final List<RssItem> items;
 
-    RssChannel(String title, String link, String description, String language, ZonedDateTime pubDate,
-                      ZonedDateTime lastBuildDate, String docs, String generator, String managingEditor,
-                      String webMaster, List<RssItem> items) {
+    RssChannel(String title, String link, Optional<String> description, Optional<String> language,
+               Optional<ZonedDateTime> pubDate, Optional<ZonedDateTime> lastBuildDate, Optional<String> docs,
+               Optional<String> generator, Optional<String> managingEditor, Optional<String> webMaster,
+               List<RssItem> items) {
         this.title = title;
         this.link = link;
         this.description = description;
