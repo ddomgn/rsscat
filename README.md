@@ -2,6 +2,12 @@
 
 RSS reader with command line interface.
 
+## Isn't RSS Dying?
+
+Yes, it is. But RSS/Atom feeds is a truly open standard and a way to get what _you_ want without filtering and censorship. Any social network tries to give users what they like, effectively hiding "not interesting" information. The key point is that _social networks_ decide what is interesting, not users.
+
+And, while dying, RSS/Atom feeds have no alternatives `:-(`
+
 ## Building and Basic Usage
 
 ```Bash
@@ -19,5 +25,5 @@ You can specify more than one RSS feed.
 
 ## Known Issues
 
-Currently __rsscat__ supports only RSS 2.0 feeds. The future version will additionally support RSS 1.0.
+__rsscat__ supports RSS 1/2 feeds.
 
