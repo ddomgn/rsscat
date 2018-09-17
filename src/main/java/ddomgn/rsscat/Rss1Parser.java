@@ -113,7 +113,7 @@ public class Rss1Parser extends XmlParser implements Parser {
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (isStartTag(inDefaultNs("title"), event)) {
-                title = nextEventData(reader, null);
+                title = nextEventData(reader, inDefaultNs("title"));
             } else if (isStartTag(inDefaultNs("link"), event)) {
                 link = nextEventData(reader, null);
             } else if (isStartTag(inDefaultNs("description"), event)) {

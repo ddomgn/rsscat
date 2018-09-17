@@ -99,7 +99,7 @@ class Rss2Parser extends XmlParser implements Parser {
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (isStartTag("title", event)) {
-                title = nextEventData(reader, null);
+                title = nextEventData(reader, "title");
             } else if (isStartTag("link", event)) {
                 link = nextEventData(reader, null);
             } else if (isStartTag("description", event)) {

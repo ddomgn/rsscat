@@ -101,4 +101,12 @@ class RssFeedTest {
         assertEquals(ZonedDateTime.parse("2003-06-03T09:39:21+00:00"), channel.items.get(0).pubDate.orElseThrow(Error::new));
         assertEquals("http://liftoff.msfc.nasa.gov/2003/06/03.html#item573", channel.items.get(0).guid.orElseThrow(Error::new));
     }
+
+    @Test
+    @DisplayName("RSS 2 feed with apostrophe in item title")
+    public void testRss2FeedWithApostropheInItemTitle() throws Exception {
+        URL url = RssFeedTest.class.getResource("/sample-rss-2-apostrophe-in-title.xml");
+        RssChannel channel = new RssFeed(url).read();
+        assertEquals("Who’s Behind the Screencam Extortion Scam?", channel.items.get(0).title);
+    }
 }
