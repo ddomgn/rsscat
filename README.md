@@ -21,7 +21,7 @@ The above command create a JAR file in `./build/libs/` subdirectory. Now you can
 java -jar rsscat.jar https://static.fsf.org/fsforg/rss/news.xml
 ```
 
-You can specify more than one RSS feed.
+You can specify more than one RSS feed. Use `-help` option for more information.
 
 ## Known Issues
 
