@@ -18,10 +18,16 @@
  */
 package ddomgn.rsscat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.System.out;
@@ -42,6 +48,9 @@ class Settings {
                 "Options:\n" +
                 "    -e\n" +
                 "        Show empty feeds\n" +
+                "    -f URL\n" +
+                "        Read feed URLs from this URL, e.g. file:///path/to/file. Each non-empty line that does not\n" +
+                "        start with # character (which is used for comments) is treated as feed URL.\n" +
                 "    -h, -help\n" +
                 "        Print help and exit\n" +
                 "    -last-days NUM\n" +
@@ -51,11 +60,13 @@ class Settings {
         );
     }
 
-    Settings parseCmdOptions(String[] args) throws MalformedURLException {
+    Settings parseCmdOptions(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             var currentArg = args[i];
             if (currentArg.equals("-e")) {
                 showEmptyFeeds = true;
+            } else if (currentArg.equals("-f")) {
+                feedUrls.addAll(feedUrlsFromUrl(args[++i]));
             } else if (currentArg.equals("-h") || currentArg.equals("-help")) {
                 helpRequired = true;
             } else if (currentArg.equals("-last-days")) {
@@ -69,6 +80,22 @@ class Settings {
             }
         }
         return this;
+    }
+
+    private URL strToUrl(String value) {
+        try {
+            return new URL(value);
+        } catch (MalformedURLException e) {
+            throw new Error(e);
+        }
+    }
+
+    private Collection<URL> feedUrlsFromUrl(String url) throws IOException {
+        try (var inputStream = new URL(url).openStream()) {
+            var reader = new BufferedReader(new InputStreamReader(inputStream));
+            Predicate<String> lineToConvert = v -> !v.isEmpty() && !v.matches("^\\s*#.*");
+            return reader.lines().filter(lineToConvert).map(this::strToUrl).collect(Collectors.toList());
+        }
     }
 
     Stream<URL> feedUrls() { return loadFeedsInParallel ? feedUrls.stream().parallel() : feedUrls.stream(); }
