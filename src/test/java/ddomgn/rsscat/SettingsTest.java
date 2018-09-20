@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,12 +73,25 @@ class SettingsTest {
     public void feedsUrls() throws Exception {
         String[] args = { "http://url1.org", "-help", "http://url2.org" };
         Settings settings = new Settings();
-        assertTrue(settings.feedUrls.isEmpty());
+        assertTrue(settings.feedUrls().collect(Collectors.toList()).isEmpty());
 
         settings.parseCmdOptions(args);
-        List<URL> feedUrls = settings.feedUrls;
+        List<URL> feedUrls = settings.feedUrls().collect(Collectors.toList());
         assertEquals(2, feedUrls.size());
         assertEquals(new URL(args[0]), feedUrls.get(0));
         assertEquals(new URL(args[2]), feedUrls.get(1));
+    }
+
+    @Test
+    @DisplayName("Load feeds in parallel option")
+    public void loadFeedsInParallelOption() {
+        String[] args = { "-p" };
+        Settings settings = new Settings();
+        assertFalse(settings.loadFeedsInParallel);
+        assertFalse(settings.feedUrls().isParallel());
+
+        settings.parseCmdOptions(args);
+        assertTrue(settings.loadFeedsInParallel);
+        assertTrue(settings.feedUrls().isParallel());
     }
 }

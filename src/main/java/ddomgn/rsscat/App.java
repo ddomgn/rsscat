@@ -30,7 +30,7 @@ public class App {
         if (settings.helpRequired) {
             settings.printHelp();
         } else {
-            var output = settings.feedUrls.stream().map(url -> {
+            var output = settings.feedUrls().map(url -> {
                 try {
                     return new RssFeed(url).read();
                 } catch (Exception e) {

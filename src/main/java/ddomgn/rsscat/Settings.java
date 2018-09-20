@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
 import static java.lang.System.out;
 
 class Settings {
@@ -29,7 +31,8 @@ class Settings {
     boolean showEmptyFeeds;
     boolean helpRequired;
     int lastDays = Integer.MAX_VALUE;
-    final List<URL> feedUrls = new ArrayList<>();
+    private final List<URL> feedUrls = new ArrayList<>();
+    boolean loadFeedsInParallel;
 
     void printHelp() {
         out.println("rsscat: RSS reader with command line interface");
@@ -43,6 +46,8 @@ class Settings {
         out.println("        Print help and exit");
         out.println("    -last-days NUM");
         out.println("        Print feed items published during NUM days");
+        out.println("    -p");
+        out.println("        Load feeds in parallel");
     }
 
     void parseCmdOptions(String[] args) {
@@ -58,6 +63,9 @@ class Settings {
                 case "-last-days":
                     lastDays = Integer.valueOf(args[++i]);
                     break;
+                case "-p":
+                    loadFeedsInParallel = true;
+                    break;
                 default:
                     if (args[i].charAt(0) == '-') {
                         throw new UnsupportedOperationException("Unknown option " + args[i]);
@@ -71,4 +79,6 @@ class Settings {
             }
         }
     }
+
+    Stream<URL> feedUrls() { return loadFeedsInParallel ? feedUrls.stream().parallel() : feedUrls.stream(); }
 }
