@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,5 +94,18 @@ class SettingsTest {
         settings.parseCmdOptions(args);
         assertTrue(settings.loadFeedsInParallel);
         assertTrue(settings.feedUrls().isParallel());
+    }
+
+    @Test
+    @DisplayName("Read feed URLs from a file")
+    public void readFeedUrlsFromFile() throws Exception {
+        String[] args = { "-f", getClass().getResource("/feeds.txt").toString() };
+        Settings settings = new Settings();
+        assertTrue(settings.feedUrls().collect(Collectors.toList()).isEmpty());
+
+        settings.parseCmdOptions(args);
+        List<URL> feedUrls = settings.feedUrls().collect(Collectors.toList());
+        assertEquals(4, feedUrls.size());
+        IntStream.range(0, 3).forEach(i -> assertEquals("http://url" + i + ".org", feedUrls.get(i).toString()));
     }
 }
