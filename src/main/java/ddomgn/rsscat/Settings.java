@@ -35,49 +35,40 @@ class Settings {
     boolean loadFeedsInParallel;
 
     void printHelp() {
-        out.println("rsscat: RSS reader with command line interface");
-        out.println("Usage:");
-        out.println("    java -jar rsscat -h");
-        out.println("    java -jar rsscat URL1 [URL2 [...]]");
-        out.println("Options:");
-        out.println("    -e");
-        out.println("        Show empty feeds");
-        out.println("    -h, -help");
-        out.println("        Print help and exit");
-        out.println("    -last-days NUM");
-        out.println("        Print feed items published during NUM days");
-        out.println("    -p");
-        out.println("        Load feeds in parallel");
+        out.println("rsscat: RSS reader with command line interface\n" +
+                "Usage:\n" +
+                "    java -jar rsscat -h\n" +
+                "    java -jar rsscat URL1 [URL2 [...]]\n" +
+                "Options:\n" +
+                "    -e\n" +
+                "        Show empty feeds\n" +
+                "    -h, -help\n" +
+                "        Print help and exit\n" +
+                "    -last-days NUM\n" +
+                "        Print feed items published during NUM days\n" +
+                "    -p\n" +
+                "        Load feeds in parallel"
+        );
     }
 
-    void parseCmdOptions(String[] args) {
+    Settings parseCmdOptions(String[] args) throws MalformedURLException {
         for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-e":
-                    showEmptyFeeds = true;
-                    break;
-                case "-h":
-                case "-help":
-                    helpRequired = true;
-                    break;
-                case "-last-days":
-                    lastDays = Integer.valueOf(args[++i]);
-                    break;
-                case "-p":
-                    loadFeedsInParallel = true;
-                    break;
-                default:
-                    if (args[i].charAt(0) == '-') {
-                        throw new UnsupportedOperationException("Unknown option " + args[i]);
-                    } else {
-                        try {
-                            feedUrls.add(new URL(args[i]));
-                        } catch (MalformedURLException e) {
-                            throw new Error(e);
-                        }
-                    }
+            var currentArg = args[i];
+            if (currentArg.equals("-e")) {
+                showEmptyFeeds = true;
+            } else if (currentArg.equals("-h") || currentArg.equals("-help")) {
+                helpRequired = true;
+            } else if (currentArg.equals("-last-days")) {
+                lastDays = Integer.valueOf(args[++i]);
+            } else if (currentArg.equals("-p")) {
+                loadFeedsInParallel = true;
+            } else if (currentArg.charAt(0) == '-') {
+                throw new UnsupportedOperationException("Unknown option " + currentArg);
+            } else {
+                feedUrls.add(new URL(currentArg));
             }
         }
+        return this;
     }
 
     Stream<URL> feedUrls() { return loadFeedsInParallel ? feedUrls.stream().parallel() : feedUrls.stream(); }

@@ -40,7 +40,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Short help option")
-    public void shortHelpOption() {
+    public void shortHelpOption() throws Exception {
         String[] args = { "-h" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -50,7 +50,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Long help option")
-    public void longHelpOption() {
+    public void longHelpOption() throws Exception {
         String[] args = { "-help" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -60,7 +60,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Last days option")
-    public void lastDaysOption() {
+    public void lastDaysOption() throws Exception {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
         assertEquals(Integer.MAX_VALUE, settings.lastDays);
@@ -84,7 +84,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Load feeds in parallel option")
-    public void loadFeedsInParallelOption() {
+    public void loadFeedsInParallelOption() throws Exception {
         String[] args = { "-p" };
         Settings settings = new Settings();
         assertFalse(settings.loadFeedsInParallel);

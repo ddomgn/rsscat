@@ -20,24 +20,22 @@ package ddomgn.rsscat;
 
 public class App {
 
-    public static void main(String[] args) {
-        Settings settings = new Settings();
-        settings.parseCmdOptions(args);
-        new App().doStuff(settings);
+    public static void main(String[] args) throws Exception {
+        new App().doStuff(new Settings().parseCmdOptions(args));
     }
 
     private void doStuff(Settings settings) {
         if (settings.helpRequired) {
             settings.printHelp();
         } else {
-            var output = settings.feedUrls().map(url -> {
-                try {
-                    return new RssFeed(url).read();
-                } catch (Exception e) {
-                    throw new Error(e);
-                }
-            }).filter(ch -> ch.shouldBeShown(settings)).map(ch -> Printer.printChannel(ch, settings)).reduce((a, b) -> a + "\n" + b).orElse("");
-            System.out.println(output);
+            System.out.println(settings
+                    .feedUrls()
+                    .map(url -> new RssFeed(url).read())
+                    .filter(channel -> channel.shouldBeShown(settings))
+                    .map(channel -> Printer.printChannel(channel, settings))
+                    .reduce((a, b) -> a + "\n" + b)
+                    .orElse("")
+            );
         }
     }
 }

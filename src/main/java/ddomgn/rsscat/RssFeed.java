@@ -20,8 +20,6 @@ package ddomgn.rsscat;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -31,14 +29,16 @@ class RssFeed {
 
     RssFeed(URL url) { this.url = url; }
 
-    RssChannel read() throws ParseException, IOException {
+    RssChannel read() {
         RssChannel result;
-        try (InputStream inputStream = url.openStream()) {
-            XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
-            result = new RootParser().parse(reader);
-            reader.close();
-        } catch (XMLStreamException e) {
-            throw new ParseException(e);
+        try {
+            try (InputStream inputStream = url.openStream()) {
+                XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
+                result = new RootParser().parse(reader);
+                reader.close();
+            }
+        } catch (Exception e) {
+            throw new Error(e);
         }
         return result;
     }
