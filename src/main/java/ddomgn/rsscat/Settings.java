@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import static ddomgn.rsscat.Printer.printLine;
+import static java.lang.System.out;
 
 class Settings {
 
@@ -32,16 +32,17 @@ class Settings {
     final List<URL> feedUrls = new ArrayList<>();
 
     void printHelp() {
-        printLine(0, "rsscat: RSS reader with command line interface");
-        printLine(0, "Usage:");
-        printLine(1, "java -jar rsscat -h");
-        printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
-        printLine(0, "-e");
-        printLine(1, "Show empty feeds");
-        printLine(0, "-h, -help");
-        printLine(1, "Print help and exit");
-        printLine(0, "-last-days NUM");
-        printLine(1, "Print feed items published during NUM days");
+        out.println("rsscat: RSS reader with command line interface");
+        out.println("Usage:");
+        out.println("    java -jar rsscat -h");
+        out.println("    java -jar rsscat URL1 [URL2 [...]]");
+        out.println("Options:");
+        out.println("    -e");
+        out.println("        Show empty feeds");
+        out.println("    -h, -help");
+        out.println("        Print help and exit");
+        out.println("    -last-days NUM");
+        out.println("        Print feed items published during NUM days");
     }
 
     void parseCmdOptions(String[] args) {

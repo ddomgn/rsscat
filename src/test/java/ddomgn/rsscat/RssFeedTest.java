@@ -23,12 +23,18 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RssFeedTest {
+
+    private final Settings defaultSettings = new Settings();
 
     @Test
     @DisplayName("RSS 1 feed test")
@@ -48,14 +54,14 @@ class RssFeedTest {
         assertFalse(channel.managingEditor.isPresent());
         assertFalse(channel.webMaster.isPresent());
 
-        assertEquals(2, channel.items.size());
-        assertEquals("Processing Inclusions with XSLT", channel.items.get(0).title);
-        assertEquals("http://xml.com/pub/2000/08/09/xslt/xslt.html", channel.items.get(0).link);
+        assertEquals(2, channel.items(defaultSettings).size());
+        assertEquals("Processing Inclusions with XSLT", channel.items(defaultSettings).get(0).title);
+        assertEquals("http://xml.com/pub/2000/08/09/xslt/xslt.html", channel.items(defaultSettings).get(0).link);
         assertEquals("Processing document inclusions with general XML tools can be problematic. This article proposes "
                 + "a way of preserving inclusion information through SAX-based processing.",
-                channel.items.get(0).description);
-        assertEquals(ZonedDateTime.parse("2018-08-09T18:36:49+00:00"), channel.items.get(0).pubDate.orElseThrow(Error::new));
-        assertFalse(channel.items.get(0).guid.isPresent());
+                channel.items(defaultSettings).get(0).description);
+        assertEquals(ZonedDateTime.parse("2018-08-09T18:36:49+00:00"), channel.items(defaultSettings).get(0).pubDate.orElseThrow(Error::new));
+        assertFalse(channel.items(defaultSettings).get(0).guid.isPresent());
     }
 
     @Test
@@ -91,15 +97,15 @@ class RssFeedTest {
         assertEquals("editor@example.com", channel.managingEditor.orElseThrow(Error::new));
         assertEquals("webmaster@example.com", channel.webMaster.orElseThrow(Error::new));
 
-        assertEquals(4, channel.items.size());
-        assertEquals("Star City", channel.items.get(0).title);
-        assertEquals("http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp", channel.items.get(0).link);
+        assertEquals(4, channel.items(defaultSettings).size());
+        assertEquals("Star City", channel.items(defaultSettings).get(0).title);
+        assertEquals("http://liftoff.msfc.nasa.gov/news/2003/news-starcity.asp", channel.items(defaultSettings).get(0).link);
         assertEquals("How do Americans get ready to work with Russians aboard the International Space Station? "
                 + "They take a crash course in culture, language and protocol at Russia's "
                 + "<a href=\"http://howe.iki.rssi.ru/GCTC/gctc_e.htm\">Star City</a>.",
-                channel.items.get(0).description);
-        assertEquals(ZonedDateTime.parse("2003-06-03T09:39:21+00:00"), channel.items.get(0).pubDate.orElseThrow(Error::new));
-        assertEquals("http://liftoff.msfc.nasa.gov/2003/06/03.html#item573", channel.items.get(0).guid.orElseThrow(Error::new));
+                channel.items(defaultSettings).get(0).description);
+        assertEquals(ZonedDateTime.parse("2003-06-03T09:39:21+00:00"), channel.items(defaultSettings).get(0).pubDate.orElseThrow(Error::new));
+        assertEquals("http://liftoff.msfc.nasa.gov/2003/06/03.html#item573", channel.items(defaultSettings).get(0).guid.orElseThrow(Error::new));
     }
 
     @Test
@@ -107,7 +113,7 @@ class RssFeedTest {
     public void testRss2FeedWithApostropheInItemTitle() throws Exception {
         URL url = RssFeedTest.class.getResource("/sample-rss-2-apostrophe-in-title.xml");
         RssChannel channel = new RssFeed(url).read();
-        assertEquals("Who’s Behind the Screencam Extortion Scam?", channel.items.get(0).title);
+        assertEquals("Who’s Behind the Screencam Extortion Scam?", channel.items(defaultSettings).get(0).title);
     }
 
     @Test
@@ -115,5 +121,26 @@ class RssFeedTest {
     public void testRss2FeedWithNewLineInDate() throws Exception {
         URL url = RssFeedTest.class.getResource("/sample-rss-2-with-newline-in-date.xml");
         new RssFeed(url).read();
+    }
+
+    @Test
+    @DisplayName("Extract recent channel items")
+    public void recentChannelItems() {
+        var now = ZonedDateTime.now();
+        var settings = new Settings();
+        settings.lastDays = 7;
+
+        var items = IntStream.range(0, 13).mapToObj(i -> {
+            var pubDate = now.minusDays(i);
+            return new RssItem("Title" + i, "Link" + i, "Desc" + i, Optional.of(pubDate), Optional.empty());
+        }).collect(Collectors.toList());
+        Collections.shuffle(items);
+
+        var channel = new RssChannel("Title", "Link", Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), items);
+        var recentItems = channel.items(settings);
+
+        assertEquals(7, recentItems.size());
+        recentItems.forEach(item -> assertTrue(item.pubDate.orElseThrow().isAfter(now.minusDays(7))));
     }
 }
