@@ -30,7 +30,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Unknown option")
-    public void testUnknownOption() {
+    public void unknownOption() {
         String[] args = { "-invalidOption" };
         UnsupportedOperationException error = assertThrows(UnsupportedOperationException.class,
                 () -> new Settings().parseCmdOptions(args));
@@ -39,7 +39,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Short help option")
-    public void testShortHelpOption() {
+    public void shortHelpOption() {
         String[] args = { "-h" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -49,7 +49,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Long help option")
-    public void testLongHelpOption() {
+    public void longHelpOption() {
         String[] args = { "-help" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -59,7 +59,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Last days option")
-    public void testLastDaysOption() {
+    public void lastDaysOption() {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
         assertEquals(Integer.MAX_VALUE, settings.lastDays);
@@ -69,7 +69,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Feeds URLs")
-    public void testFeedsUrls() throws Exception {
+    public void feedsUrls() throws Exception {
         String[] args = { "http://url1.org", "-help", "http://url2.org" };
         Settings settings = new Settings();
         assertTrue(settings.feedUrls.isEmpty());
