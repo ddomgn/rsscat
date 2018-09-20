@@ -21,7 +21,11 @@ The above command create a JAR file in `./build/libs/` subdirectory. Now you can
 java -jar rsscat.jar https://static.fsf.org/fsforg/rss/news.xml
 ```
 
-You can specify more than one RSS feed. Use `-help` option for more information.
+You can specify more than one RSS feed.
+
+To load feeds in parallel threads use `-p` option. This option makes no sense until the network speed is very slow or too many feeds are specified. In fact it can even slow down the process if you are loading few feeds over fast network connection.
+
+Use `-help` option for more information.
 
 ## Known Issues
 
