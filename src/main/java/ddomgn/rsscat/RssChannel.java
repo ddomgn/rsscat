@@ -21,20 +21,22 @@ package ddomgn.rsscat;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RssChannel {
 
     public final String title;
     public final String link;
     public final Optional<String> description;
-    public final Optional<String> language;
-    public final Optional<ZonedDateTime> pubDate;
-    public final Optional<ZonedDateTime> lastBuildDate;
-    public final Optional<String> docs;
-    public final Optional<String> generator;
-    public final Optional<String> managingEditor;
-    public final Optional<String> webMaster;
-    public final List<RssItem> items;
+    final Optional<String> language;
+    final Optional<ZonedDateTime> pubDate;
+    final Optional<ZonedDateTime> lastBuildDate;
+    final Optional<String> docs;
+    final Optional<String> generator;
+    final Optional<String> managingEditor;
+    final Optional<String> webMaster;
+
+    private final List<RssItem> items;
 
     RssChannel(String title, String link, Optional<String> description, Optional<String> language,
                Optional<ZonedDateTime> pubDate, Optional<ZonedDateTime> lastBuildDate, Optional<String> docs,
@@ -52,4 +54,12 @@ public class RssChannel {
         this.webMaster = webMaster;
         this.items = items;
     }
+
+    List<RssItem> items(Settings settings) {
+        var now = ZonedDateTime.now();
+        var start = now.minusDays(settings.lastDays);
+        return items.stream().filter(item -> item.pubDate.orElse(now).isAfter(start)).collect(Collectors.toList());
+    }
+
+    boolean shouldBeShown(Settings settings) { return items(settings).size() > 0 || settings.showEmptyFeeds; }
 }
