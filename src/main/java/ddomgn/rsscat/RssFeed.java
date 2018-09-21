@@ -20,6 +20,7 @@ package ddomgn.rsscat;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -32,7 +33,7 @@ class RssFeed {
     RssChannel read() {
         RssChannel result;
         try {
-            try (InputStream inputStream = url.openStream()) {
+            try (InputStream inputStream = new BufferedInputStream(url.openStream())) {
                 XMLEventReader reader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
                 result = new RootParser().parse(reader);
                 reader.close();
