@@ -18,13 +18,16 @@
  */
 package ddomgn.rsscat;
 
+import java.util.function.Function;
+
 class Printer {
 
     static final String INDENT = "    ";
 
     static String printChannel(RssChannel channel, Settings settings) {
+        Function<String, String> descriptionToString = v -> settings.hideFeedDescription ? "" : ": " + v;
         return channel.title
-                + channel.description.map(v -> ": " + v).orElse("") + "\n"
+                + channel.description.map(descriptionToString).orElse("") + "\n"
                 + channel.items(settings).stream().map(Printer::printItem).reduce((a, b) -> a + b).orElse("");
     }
 
