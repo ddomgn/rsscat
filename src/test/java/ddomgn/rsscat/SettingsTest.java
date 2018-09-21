@@ -108,4 +108,15 @@ class SettingsTest {
         assertEquals(4, feedUrls.size());
         IntStream.range(0, 3).forEach(i -> assertEquals("http://url" + i + ".org", feedUrls.get(i).toString()));
     }
+
+    @Test
+    @DisplayName("Hide feed description")
+    public void hideFeedDescription() throws Exception {
+        String[] args = { "-D" };
+        Settings settings = new Settings();
+        assertFalse(settings.hideFeedDescription);
+
+        settings.parseCmdOptions(args);
+        assertTrue(settings.hideFeedDescription);
+    }
 }

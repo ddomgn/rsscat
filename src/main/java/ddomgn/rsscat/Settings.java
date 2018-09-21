@@ -39,6 +39,7 @@ class Settings {
     int lastDays = Integer.MAX_VALUE;
     private final List<URL> feedUrls = new ArrayList<>();
     boolean loadFeedsInParallel;
+    boolean hideFeedDescription;
 
     void printHelp() {
         out.println("rsscat: RSS reader with command line interface\n" +
@@ -46,17 +47,19 @@ class Settings {
                 "    java -jar rsscat -h\n" +
                 "    java -jar rsscat URL1 [URL2 [...]]\n" +
                 "Options:\n" +
+                "    -D\n" +
+                "        Hide feed description.\n" +
                 "    -e\n" +
-                "        Show empty feeds\n" +
+                "        Show empty feeds.\n" +
                 "    -f URL\n" +
                 "        Read feed URLs from this URL, e.g. file:///path/to/file. Each non-empty line that does not\n" +
                 "        start with # character (which is used for comments) is treated as feed URL.\n" +
                 "    -h, -help\n" +
-                "        Print help and exit\n" +
+                "        Print help and exit.\n" +
                 "    -last-days NUM\n" +
-                "        Print feed items published during NUM days\n" +
+                "        Print feed items published during NUM days.\n" +
                 "    -p\n" +
-                "        Load feeds in parallel"
+                "        Load feeds in parallel."
         );
     }
 
@@ -65,6 +68,8 @@ class Settings {
             var currentArg = args[i];
             if (currentArg.equals("-e")) {
                 showEmptyFeeds = true;
+            } else if (currentArg.equals("-D")) {
+                hideFeedDescription = true;
             } else if (currentArg.equals("-f")) {
                 feedUrls.addAll(feedUrlsFromUrl(args[++i]));
             } else if (currentArg.equals("-h") || currentArg.equals("-help")) {

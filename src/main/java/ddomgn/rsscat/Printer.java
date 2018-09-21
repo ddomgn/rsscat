@@ -24,14 +24,14 @@ class Printer {
 
     static String printChannel(RssChannel channel, Settings settings) {
         return channel.title
-                + channel.description.map(v -> ": " + v).orElse("") + "\n"
+                + ((channel.description == null || settings.hideFeedDescription) ? "" : ": " + channel.description) + "\n"
                 + channel.items(settings).stream().map(Printer::printItem).reduce((a, b) -> a + b).orElse("");
     }
 
     private static String printItem(RssItem item) {
         return INDENT + item.title + "\n"
                 + INDENT + INDENT + item.link + "\n"
-                + item.pubDate.map(v -> INDENT + INDENT + v.toString() + "\n").orElse("");
+                + (item.pubDate == null ? "" : INDENT + INDENT + item.pubDate + "\n");
     }
 }
 

@@ -22,7 +22,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,26 +30,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PrinterTest {
 
     private final Settings defaultSettings = new Settings();
+    private final ZonedDateTime now = ZonedDateTime.now();
 
-    @Test
-    @DisplayName("Channel printer")
-    void printChannel() {
-        var time = ZonedDateTime.now();
+    private RssChannel createChannel(ZonedDateTime itemTime) {
         var items = IntStream.range(1, 2) .mapToObj(i -> new RssItem(
                 "ItemTitle" + i,
                 "ItemLink" + i,
                 "ItemDesc" + i,
-                Optional.of(time),
-                Optional.of("ItemGuid" + i))
+                itemTime,
+                "ItemGuid" + i)
         ).collect(Collectors.toList());
-        var channel = new RssChannel("ChTitle", "ChLink", Optional.of("ChDesc"), Optional.of("ChLanguage"),
-                Optional.of(ZonedDateTime.now()), Optional.of(ZonedDateTime.now()), Optional.of("ChDocs"),
-                Optional.of("ChGenerator"), Optional.of("ChManagingEditor"), Optional.of("ChWebMaster"), items);
-        var output = Printer.printChannel(channel, defaultSettings);
+        return new RssChannel("ChTitle", "ChLink", "ChDesc",
+                new RssChannel.Dates(ZonedDateTime.now(), ZonedDateTime.now()),
+                new RssChannel.Details("ChLanguage", "ChDocs", "ChGenerator", "ChManagingEditor", "ChWebMaster"),
+                items);
+    }
+
+    @Test
+    @DisplayName("Channel printer")
+    void printChannel() {
+        var output = Printer.printChannel(createChannel(now), defaultSettings);
         assertEquals("ChTitle: ChDesc\n"
-                + Printer.INDENT + "ItemTitle1\n"
-                + Printer.INDENT.repeat(2) + "ItemLink1\n"
-                + Printer.INDENT.repeat(2) + time.toString() + "\n",
+                        + Printer.INDENT + "ItemTitle1\n"
+                        + Printer.INDENT.repeat(2) + "ItemLink1\n"
+                        + Printer.INDENT.repeat(2) + now.toString() + "\n",
+                output);
+    }
+
+    @Test
+    @DisplayName("Hide channel description")
+    void hideChannelDescription() {
+        var settings = new Settings();
+        settings.hideFeedDescription = true;
+        var output = Printer.printChannel(createChannel(now), settings);
+        assertEquals("ChTitle\n"
+                        + Printer.INDENT + "ItemTitle1\n"
+                        + Printer.INDENT.repeat(2) + "ItemLink1\n"
+                        + Printer.INDENT.repeat(2) + now.toString() + "\n",
                 output);
     }
 }
