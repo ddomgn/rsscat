@@ -33,6 +33,18 @@ __rsscat__ supports RSS 1/2 feeds.
 
 ## Changelog
 
+### 0.3.0
+
+Features:
+
+- Hide channel description (-D)
+- Read feed URLs from a file (-f)
+- Load feeds in parallel (-p)
+
+Bug fixes:
+
+- Errors reading feeds through unstable network
+
 ### 0.2.0
 
 Features:
