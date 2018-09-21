@@ -40,8 +40,10 @@ class PrinterTest {
                 itemTime,
                 "ItemGuid" + i)
         ).collect(Collectors.toList());
-        return new RssChannel("ChTitle", "ChLink", "ChDesc", "ChLanguage", ZonedDateTime.now(), ZonedDateTime.now(),
-                "ChDocs", "ChGenerator", "ChManagingEditor", "ChWebMaster", items);
+        return new RssChannel("ChTitle", "ChLink", "ChDesc",
+                new RssChannel.Dates(ZonedDateTime.now(), ZonedDateTime.now()),
+                new RssChannel.Details("ChLanguage", "ChDocs", "ChGenerator", "ChManagingEditor", "ChWebMaster"),
+                items);
     }
 
     @Test

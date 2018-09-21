@@ -79,8 +79,10 @@ class Rss2Parser extends XmlParser implements Parser {
                 items.add(parseItem(reader));
             }
         }
-        return new RssChannel(title, link, description, language, pubDate, lastBuildDate, docs, generator,
-                managingEditor, webMaster, items);
+        return new RssChannel(title, link, description,
+                new RssChannel.Dates(pubDate, lastBuildDate),
+                new RssChannel.Details(language, docs, generator, managingEditor, webMaster),
+                items);
     }
 
     private RssItem parseItem(XMLEventReader reader) throws XMLStreamException {

@@ -35,7 +35,7 @@ class RssFeedTest {
 
     @Test
     @DisplayName("RSS 1 feed test")
-    public void testRss1Feed() throws Exception {
+    public void testRss1Feed() {
         URL url = RssFeedTest.class.getResource("/sample-rss-1.xml");
         RssFeed feed = new RssFeed(url);
 
@@ -43,13 +43,8 @@ class RssFeedTest {
         assertEquals("XML.com", channel.title);
         assertEquals("http://xml.com/pub", channel.link);
         assertEquals("XML.com features a rich mix of information and services for the XML community.", channel.description);
-        assertNull(channel.language);
-        assertNull(channel.pubDate);
-        assertNull(channel.lastBuildDate);
-        assertNull(channel.docs);
-        assertNull(channel.generator);
-        assertNull(channel.managingEditor);
-        assertNull(channel.webMaster);
+        assertNull(channel.dates);
+        assertNull(channel.details);
 
         assertEquals(2, channel.items(defaultSettings).size());
         assertEquals("Processing Inclusions with XSLT", channel.items(defaultSettings).get(0).title);
@@ -63,7 +58,7 @@ class RssFeedTest {
 
     @Test
     @DisplayName("RSS 1 feed with empty description")
-    public void testRss1FeedWithEmptyDesc() throws Exception {
+    public void testRss1FeedWithEmptyDesc() {
         URL url = RssFeedTest.class.getResource("/sample-rss-1-empty-desc.xml");
         RssChannel channel = new RssFeed(url).read();
         assertNull(channel.description);
@@ -71,14 +66,14 @@ class RssFeedTest {
 
     @Test
     @DisplayName("RSS 1 feed with full item resource name")
-    public void testRss1FeedWithFullItemResourcename() throws Exception {
+    public void testRss1FeedWithFullItemResourcename() {
         URL url = RssFeedTest.class.getResource("/sample-rss1-full-item-resource-attr-name.xml");
         new RssFeed(url).read();
     }
 
     @Test
     @DisplayName("RSS 2 feed test")
-    public void testRss2Feed() throws Exception {
+    public void testRss2Feed() {
         URL url = RssFeedTest.class.getResource("/sample-rss-2.xml");
         RssFeed feed = new RssFeed(url);
 
@@ -86,13 +81,13 @@ class RssFeedTest {
         assertEquals("Liftoff News", channel.title);
         assertEquals("http://liftoff.msfc.nasa.gov/", channel.link);
         assertEquals("Liftoff to Space Exploration.", channel.description);
-        assertEquals("en-us", channel.language);
-        assertEquals(ZonedDateTime.parse("2003-06-10T04:00:00+00:00"), channel.pubDate);
-        assertEquals(ZonedDateTime.parse("2003-06-10T09:41:01+00:00"), channel.lastBuildDate);
-        assertEquals("http://blogs.law.harvard.edu/tech/rss", channel.docs);
-        assertEquals("Weblog Editor 2.0", channel.generator);
-        assertEquals("editor@example.com", channel.managingEditor);
-        assertEquals("webmaster@example.com", channel.webMaster);
+        assertEquals("en-us", channel.details.language);
+        assertEquals(ZonedDateTime.parse("2003-06-10T04:00:00+00:00"), channel.dates.pubDate);
+        assertEquals(ZonedDateTime.parse("2003-06-10T09:41:01+00:00"), channel.dates.lastBuildDate);
+        assertEquals("http://blogs.law.harvard.edu/tech/rss", channel.details.docs);
+        assertEquals("Weblog Editor 2.0", channel.details.generator);
+        assertEquals("editor@example.com", channel.details.managingEditor);
+        assertEquals("webmaster@example.com", channel.details.webMaster);
 
         assertEquals(4, channel.items(defaultSettings).size());
         assertEquals("Star City", channel.items(defaultSettings).get(0).title);
@@ -107,7 +102,7 @@ class RssFeedTest {
 
     @Test
     @DisplayName("RSS 2 feed with apostrophe in item title")
-    public void testRss2FeedWithApostropheInItemTitle() throws Exception {
+    public void testRss2FeedWithApostropheInItemTitle() {
         URL url = RssFeedTest.class.getResource("/sample-rss-2-apostrophe-in-title.xml");
         RssChannel channel = new RssFeed(url).read();
         assertEquals("Who’s Behind the Screencam Extortion Scam?", channel.items(defaultSettings).get(0).title);
@@ -115,7 +110,7 @@ class RssFeedTest {
 
     @Test
     @DisplayName("RSS 2 feed with new line in date")
-    public void testRss2FeedWithNewLineInDate() throws Exception {
+    public void testRss2FeedWithNewLineInDate() {
         URL url = RssFeedTest.class.getResource("/sample-rss-2-with-newline-in-date.xml");
         new RssFeed(url).read();
     }
@@ -133,7 +128,7 @@ class RssFeedTest {
         }).collect(Collectors.toList());
         Collections.shuffle(items);
 
-        var channel = new RssChannel("Title", "Link", null, null, null, null, null, null, null, null, items);
+        var channel = new RssChannel("Title", "Link", null, null, null, items);
         var recentItems = channel.items(settings);
 
         assertEquals(7, recentItems.size());

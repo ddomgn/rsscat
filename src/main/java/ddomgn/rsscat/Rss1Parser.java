@@ -51,7 +51,7 @@ public class Rss1Parser extends XmlParser implements Parser {
             throw new ParseException("No <channel> tag found");
         } else {
             return new RssChannel(channelParseResult.title, channelParseResult.link, channelParseResult.description,
-                    null, null, null, null, null, null, null, items);
+                    null, null, items);
         }
     }
 
