@@ -37,9 +37,9 @@ __rsscat__ supports RSS 1/2 feeds.
 
 Features:
 
-- Hide channel description (-D)
-- Read feed URLs from a file (-f)
-- Load feeds in parallel (-p)
+- Hide channel description (`-D`)
+- Read feed URLs from a file (`-f`)
+- Load feeds in parallel (`-p`)
 
 Bug fixes:
 
