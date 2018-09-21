@@ -18,23 +18,20 @@
  */
 package ddomgn.rsscat;
 
-import java.util.function.Function;
-
 class Printer {
 
     static final String INDENT = "    ";
 
     static String printChannel(RssChannel channel, Settings settings) {
-        Function<String, String> descriptionToString = v -> settings.hideFeedDescription ? "" : ": " + v;
         return channel.title
-                + channel.description.map(descriptionToString).orElse("") + "\n"
+                + ((channel.description == null || settings.hideFeedDescription) ? "" : ": " + channel.description) + "\n"
                 + channel.items(settings).stream().map(Printer::printItem).reduce((a, b) -> a + b).orElse("");
     }
 
     private static String printItem(RssItem item) {
         return INDENT + item.title + "\n"
                 + INDENT + INDENT + item.link + "\n"
-                + item.pubDate.map(v -> INDENT + INDENT + v.toString() + "\n").orElse("");
+                + (item.pubDate == null ? "" : INDENT + INDENT + item.pubDate + "\n");
     }
 }
 

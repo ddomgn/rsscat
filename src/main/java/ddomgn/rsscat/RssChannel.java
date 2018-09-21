@@ -20,27 +20,26 @@ package ddomgn.rsscat;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class RssChannel {
 
     public final String title;
     public final String link;
-    public final Optional<String> description;
-    final Optional<String> language;
-    final Optional<ZonedDateTime> pubDate;
-    final Optional<ZonedDateTime> lastBuildDate;
-    final Optional<String> docs;
-    final Optional<String> generator;
-    final Optional<String> managingEditor;
-    final Optional<String> webMaster;
+    public final String description;
+    final String language;
+    final ZonedDateTime pubDate;
+    final ZonedDateTime lastBuildDate;
+    final String docs;
+    final String generator;
+    final String managingEditor;
+    final String webMaster;
 
     private final List<RssItem> items;
 
-    RssChannel(String title, String link, Optional<String> description, Optional<String> language,
-               Optional<ZonedDateTime> pubDate, Optional<ZonedDateTime> lastBuildDate, Optional<String> docs,
-               Optional<String> generator, Optional<String> managingEditor, Optional<String> webMaster,
+    RssChannel(String title, String link, String description, String language, ZonedDateTime pubDate,
+               ZonedDateTime lastBuildDate, String docs, String generator, String managingEditor, String webMaster,
                List<RssItem> items) {
         this.title = title;
         this.link = link;
@@ -57,8 +56,8 @@ public class RssChannel {
 
     List<RssItem> items(Settings settings) {
         var now = ZonedDateTime.now();
-        var start = now.minusDays(settings.lastDays);
-        return items.stream().filter(item -> item.pubDate.orElse(now).isAfter(start)).collect(Collectors.toList());
+        Predicate<RssItem> inSelectedTime = item -> (item.pubDate == null ? now : item.pubDate).isAfter(now.minusDays(settings.lastDays));
+        return items.stream().filter(inSelectedTime).collect(Collectors.toList());
     }
 
     boolean shouldBeShown(Settings settings) { return items(settings).size() > 0 || settings.showEmptyFeeds; }

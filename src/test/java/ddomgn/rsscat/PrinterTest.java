@@ -22,7 +22,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,12 +37,11 @@ class PrinterTest {
                 "ItemTitle" + i,
                 "ItemLink" + i,
                 "ItemDesc" + i,
-                Optional.of(itemTime),
-                Optional.of("ItemGuid" + i))
+                itemTime,
+                "ItemGuid" + i)
         ).collect(Collectors.toList());
-        return new RssChannel("ChTitle", "ChLink", Optional.of("ChDesc"), Optional.of("ChLanguage"),
-                Optional.of(ZonedDateTime.now()), Optional.of(ZonedDateTime.now()), Optional.of("ChDocs"),
-                Optional.of("ChGenerator"), Optional.of("ChManagingEditor"), Optional.of("ChWebMaster"), items);
+        return new RssChannel("ChTitle", "ChLink", "ChDesc", "ChLanguage", ZonedDateTime.now(), ZonedDateTime.now(),
+                "ChDocs", "ChGenerator", "ChManagingEditor", "ChWebMaster", items);
     }
 
     @Test
