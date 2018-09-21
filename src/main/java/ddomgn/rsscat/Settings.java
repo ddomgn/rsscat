@@ -50,16 +50,16 @@ class Settings {
                 "    -D\n" +
                 "        Hide feed description.\n" +
                 "    -e\n" +
-                "        Show empty feeds\n" +
+                "        Show empty feeds.\n" +
                 "    -f URL\n" +
                 "        Read feed URLs from this URL, e.g. file:///path/to/file. Each non-empty line that does not\n" +
                 "        start with # character (which is used for comments) is treated as feed URL.\n" +
                 "    -h, -help\n" +
-                "        Print help and exit\n" +
+                "        Print help and exit.\n" +
                 "    -last-days NUM\n" +
-                "        Print feed items published during NUM days\n" +
+                "        Print feed items published during NUM days.\n" +
                 "    -p\n" +
-                "        Load feeds in parallel"
+                "        Load feeds in parallel."
         );
     }
 
