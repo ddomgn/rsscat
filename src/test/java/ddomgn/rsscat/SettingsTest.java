@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +32,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Unknown option")
-    public void testUnknownOption() {
+    public void unknownOption() {
         String[] args = { "-invalidOption" };
         UnsupportedOperationException error = assertThrows(UnsupportedOperationException.class,
                 () -> new Settings().parseCmdOptions(args));
@@ -39,7 +41,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Short help option")
-    public void testShortHelpOption() {
+    public void shortHelpOption() throws Exception {
         String[] args = { "-h" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -49,7 +51,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Long help option")
-    public void testLongHelpOption() {
+    public void longHelpOption() throws Exception {
         String[] args = { "-help" };
         Settings settings = new Settings();
         assertFalse(settings.helpRequired);
@@ -59,7 +61,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Last days option")
-    public void testLastDaysOption() {
+    public void lastDaysOption() throws Exception {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
         assertEquals(Integer.MAX_VALUE, settings.lastDays);
@@ -69,15 +71,52 @@ class SettingsTest {
 
     @Test
     @DisplayName("Feeds URLs")
-    public void testFeedsUrls() throws Exception {
+    public void feedsUrls() throws Exception {
         String[] args = { "http://url1.org", "-help", "http://url2.org" };
         Settings settings = new Settings();
-        assertTrue(settings.feedUrls.isEmpty());
+        assertTrue(settings.feedUrls().collect(Collectors.toList()).isEmpty());
 
         settings.parseCmdOptions(args);
-        List<URL> feedUrls = settings.feedUrls;
+        List<URL> feedUrls = settings.feedUrls().collect(Collectors.toList());
         assertEquals(2, feedUrls.size());
         assertEquals(new URL(args[0]), feedUrls.get(0));
         assertEquals(new URL(args[2]), feedUrls.get(1));
+    }
+
+    @Test
+    @DisplayName("Load feeds in parallel option")
+    public void loadFeedsInParallelOption() throws Exception {
+        String[] args = { "-p" };
+        Settings settings = new Settings();
+        assertFalse(settings.loadFeedsInParallel);
+        assertFalse(settings.feedUrls().isParallel());
+
+        settings.parseCmdOptions(args);
+        assertTrue(settings.loadFeedsInParallel);
+        assertTrue(settings.feedUrls().isParallel());
+    }
+
+    @Test
+    @DisplayName("Read feed URLs from a file")
+    public void readFeedUrlsFromFile() throws Exception {
+        String[] args = { "-f", getClass().getResource("/feeds.txt").toString() };
+        Settings settings = new Settings();
+        assertTrue(settings.feedUrls().collect(Collectors.toList()).isEmpty());
+
+        settings.parseCmdOptions(args);
+        List<URL> feedUrls = settings.feedUrls().collect(Collectors.toList());
+        assertEquals(4, feedUrls.size());
+        IntStream.range(0, 3).forEach(i -> assertEquals("http://url" + i + ".org", feedUrls.get(i).toString()));
+    }
+
+    @Test
+    @DisplayName("Hide feed description")
+    public void hideFeedDescription() throws Exception {
+        String[] args = { "-D" };
+        Settings settings = new Settings();
+        assertFalse(settings.hideFeedDescription);
+
+        settings.parseCmdOptions(args);
+        assertTrue(settings.hideFeedDescription);
     }
 }

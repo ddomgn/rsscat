@@ -50,10 +50,8 @@ public class Rss1Parser extends XmlParser implements Parser {
         if (channelParseResult == null) {
             throw new ParseException("No <channel> tag found");
         } else {
-            return new RssChannel(channelParseResult.title, channelParseResult.link,
-                    Optional.ofNullable(channelParseResult.description),
-                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-                    Optional.empty(), Optional.empty(), items);
+            return new RssChannel(channelParseResult.title, channelParseResult.link, channelParseResult.description,
+                    null, null, items);
         }
     }
 
@@ -109,7 +107,7 @@ public class Rss1Parser extends XmlParser implements Parser {
 
     private RssItem parseItem(XMLEventReader reader) throws XMLStreamException {
         String title = null, link = null, description = null;
-        Optional<ZonedDateTime> pubDate = Optional.empty();
+        ZonedDateTime pubDate = null;
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (isStartTag(inDefaultNs("title"), event)) {
@@ -119,11 +117,11 @@ public class Rss1Parser extends XmlParser implements Parser {
             } else if (isStartTag(inDefaultNs("description"), event)) {
                 description = nextEventData(reader, inDefaultNs("description"));
             } else if (isStartTag(inDcNs("date"), event)) {
-                pubDate = Optional.of(strToZonedDateTime(nextEventData(reader, null)));
+                pubDate = strToZonedDateTime(nextEventData(reader, null));
             } else if (isEndTag(inDefaultNs("item"), event)) {
                 break;
             }
         }
-        return new RssItem(title, link, description, pubDate, Optional.empty());
+        return new RssItem(title, link, description, pubDate, null);
     }
 }

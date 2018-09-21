@@ -18,56 +18,90 @@
  */
 package ddomgn.rsscat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import static ddomgn.rsscat.Printer.printLine;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.lang.System.out;
 
 class Settings {
 
     boolean showEmptyFeeds;
     boolean helpRequired;
     int lastDays = Integer.MAX_VALUE;
-    final List<URL> feedUrls = new ArrayList<>();
+    private final List<URL> feedUrls = new ArrayList<>();
+    boolean loadFeedsInParallel;
+    boolean hideFeedDescription;
 
     void printHelp() {
-        printLine(0, "rsscat: RSS reader with command line interface");
-        printLine(0, "Usage:");
-        printLine(1, "java -jar rsscat -h");
-        printLine(1, "java -jar rsscat URL1 [URL2 [...]]");
-        printLine(0, "-e");
-        printLine(1, "Show empty feeds");
-        printLine(0, "-h, -help");
-        printLine(1, "Print help and exit");
-        printLine(0, "-last-days NUM");
-        printLine(1, "Print feed items published during NUM days");
+        out.println("rsscat: RSS reader with command line interface\n" +
+                "Usage:\n" +
+                "    java -jar rsscat -h\n" +
+                "    java -jar rsscat URL1 [URL2 [...]]\n" +
+                "Options:\n" +
+                "    -D\n" +
+                "        Hide feed description.\n" +
+                "    -e\n" +
+                "        Show empty feeds.\n" +
+                "    -f URL\n" +
+                "        Read feed URLs from this URL, e.g. file:///path/to/file. Each non-empty line that does not\n" +
+                "        start with # character (which is used for comments) is treated as feed URL.\n" +
+                "    -h, -help\n" +
+                "        Print help and exit.\n" +
+                "    -last-days NUM\n" +
+                "        Print feed items published during NUM days.\n" +
+                "    -p\n" +
+                "        Load feeds in parallel."
+        );
     }
 
-    void parseCmdOptions(String[] args) {
+    Settings parseCmdOptions(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-e":
-                    showEmptyFeeds = true;
-                    break;
-                case "-h":
-                case "-help":
-                    helpRequired = true;
-                    break;
-                case "-last-days":
-                    lastDays = Integer.valueOf(args[++i]);
-                    break;
-                default:
-                    if (args[i].charAt(0) == '-') {
-                        throw new UnsupportedOperationException("Unknown option " + args[i]);
-                    } else {
-                        try {
-                            feedUrls.add(new URL(args[i]));
-                        } catch (MalformedURLException e) {
-                            throw new Error(e);
-                        }
-                    }
+            var currentArg = args[i];
+            if (currentArg.equals("-e")) {
+                showEmptyFeeds = true;
+            } else if (currentArg.equals("-D")) {
+                hideFeedDescription = true;
+            } else if (currentArg.equals("-f")) {
+                feedUrls.addAll(feedUrlsFromUrl(args[++i]));
+            } else if (currentArg.equals("-h") || currentArg.equals("-help")) {
+                helpRequired = true;
+            } else if (currentArg.equals("-last-days")) {
+                lastDays = Integer.valueOf(args[++i]);
+            } else if (currentArg.equals("-p")) {
+                loadFeedsInParallel = true;
+            } else if (currentArg.charAt(0) == '-') {
+                throw new UnsupportedOperationException("Unknown option " + currentArg);
+            } else {
+                feedUrls.add(new URL(currentArg));
             }
         }
+        return this;
     }
+
+    private URL strToUrl(String value) {
+        try {
+            return new URL(value);
+        } catch (MalformedURLException e) {
+            throw new Error(e);
+        }
+    }
+
+    private Collection<URL> feedUrlsFromUrl(String url) throws IOException {
+        try (var inputStream = new URL(url).openStream()) {
+            var reader = new BufferedReader(new InputStreamReader(inputStream));
+            Predicate<String> lineToConvert = v -> !v.isEmpty() && !v.matches("^\\s*#.*");
+            return reader.lines().filter(lineToConvert).map(this::strToUrl).collect(Collectors.toList());
+        }
+    }
+
+    Stream<URL> feedUrls() { return loadFeedsInParallel ? feedUrls.stream().parallel() : feedUrls.stream(); }
 }

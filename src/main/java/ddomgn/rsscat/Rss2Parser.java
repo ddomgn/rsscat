@@ -24,7 +24,6 @@ import javax.xml.stream.events.XMLEvent;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 class Rss2Parser extends XmlParser implements Parser {
 
@@ -80,22 +79,16 @@ class Rss2Parser extends XmlParser implements Parser {
                 items.add(parseItem(reader));
             }
         }
-        return new RssChannel(title, link,
-                Optional.ofNullable(description),
-                Optional.ofNullable(language),
-                Optional.ofNullable(pubDate),
-                Optional.ofNullable(lastBuildDate),
-                Optional.ofNullable(docs),
-                Optional.ofNullable(generator),
-                Optional.ofNullable(managingEditor),
-                Optional.ofNullable(webMaster),
+        return new RssChannel(title, link, description,
+                new RssChannel.Dates(pubDate, lastBuildDate),
+                new RssChannel.Details(language, docs, generator, managingEditor, webMaster),
                 items);
     }
 
     private RssItem parseItem(XMLEventReader reader) throws XMLStreamException {
         String title = null, link = null, description = null;
-        Optional<String> guid = Optional.empty();
-        Optional<ZonedDateTime> pubDate = Optional.empty();
+        String guid = null;
+        ZonedDateTime pubDate = null;
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
             if (isStartTag("title", event)) {
@@ -105,9 +98,9 @@ class Rss2Parser extends XmlParser implements Parser {
             } else if (isStartTag("description", event)) {
                 description = nextEventData(reader, "description");
             } else if (isStartTag("pubdate", event)) {
-                pubDate = Optional.of(strToZonedDateTime(nextEventData(reader, null)));
+                pubDate = strToZonedDateTime(nextEventData(reader, null));
             } else if (isStartTag("guid", event)) {
-                guid = Optional.of(nextEventData(reader, null));
+                guid = nextEventData(reader, null);
             } else if (isEndTag("item", event)) {
                 break;
             }

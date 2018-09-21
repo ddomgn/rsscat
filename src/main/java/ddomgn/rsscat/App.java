@@ -18,48 +18,24 @@
  */
 package ddomgn.rsscat;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static ddomgn.rsscat.Printer.printLine;
-import static java.lang.System.out;
-
 public class App {
 
-    public static void main(String[] args) {
-        Settings settings = new Settings();
-        settings.parseCmdOptions(args);
-        new App().doStuff(settings);
+    public static void main(String[] args) throws Exception {
+        new App().doStuff(new Settings().parseCmdOptions(args));
     }
 
     private void doStuff(Settings settings) {
-        ZonedDateTime fromDateTime = ZonedDateTime.now().minusDays(settings.lastDays);
         if (settings.helpRequired) {
             settings.printHelp();
-            return;
+        } else {
+            System.out.println(settings
+                    .feedUrls()
+                    .map(url -> new RssFeed(url).read())
+                    .filter(channel -> channel.shouldBeShown(settings))
+                    .map(channel -> Printer.printChannel(channel, settings))
+                    .reduce((a, b) -> a + "\n" + b)
+                    .orElse("")
+            );
         }
-        settings.feedUrls.stream().map(url -> {
-            try {
-                return new RssFeed(url).read();
-            } catch (Exception e) {
-                throw new Error(e);
-            }
-        }).forEach(channel -> {
-            List<RssItem> itemsToShow = channel.items.stream()
-                    .filter(item -> 0 <= item.pubDate.orElseGet(ZonedDateTime::now).compareTo(fromDateTime))
-                    .collect(Collectors.toList());
-            if (!itemsToShow.isEmpty() || settings.showEmptyFeeds) {
-                out.println();
-                Printer.printLine(0, channel.title + channel.description.map(v -> ": " + v).orElse(""));
-                itemsToShow.forEach(this::printItem);
-            }
-        });
-    }
-
-    private void printItem(RssItem item) {
-        printLine(1, item.title);
-        item.pubDate.ifPresent(v -> printLine(2, v.toString()));
-        printLine(2, item.link);
     }
 }

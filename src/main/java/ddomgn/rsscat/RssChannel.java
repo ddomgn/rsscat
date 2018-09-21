@@ -20,36 +20,57 @@ package ddomgn.rsscat;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class RssChannel {
 
+    static class Dates {
+        final ZonedDateTime pubDate;
+        final ZonedDateTime lastBuildDate;
+        Dates(ZonedDateTime pubDate, ZonedDateTime lastBuildDate) {
+            this.pubDate = pubDate;
+            this.lastBuildDate = lastBuildDate;
+        }
+    }
+
+    static class Details {
+        final String language;
+        final String docs;
+        final String generator;
+        final String managingEditor;
+        final String webMaster;
+        Details(String language, String docs, String generator, String managingEditor, String webMaster) {
+            this.language = language;
+            this.docs = docs;
+            this.generator = generator;
+            this.managingEditor = managingEditor;
+            this.webMaster = webMaster;
+        }
+    }
+
     public final String title;
     public final String link;
-    public final Optional<String> description;
-    public final Optional<String> language;
-    public final Optional<ZonedDateTime> pubDate;
-    public final Optional<ZonedDateTime> lastBuildDate;
-    public final Optional<String> docs;
-    public final Optional<String> generator;
-    public final Optional<String> managingEditor;
-    public final Optional<String> webMaster;
-    public final List<RssItem> items;
+    public final String description;
+    final Dates dates;
+    final Details details;
 
-    RssChannel(String title, String link, Optional<String> description, Optional<String> language,
-               Optional<ZonedDateTime> pubDate, Optional<ZonedDateTime> lastBuildDate, Optional<String> docs,
-               Optional<String> generator, Optional<String> managingEditor, Optional<String> webMaster,
-               List<RssItem> items) {
+    private final List<RssItem> items;
+
+    RssChannel(String title, String link, String description, Dates dates, Details details, List<RssItem> items) {
         this.title = title;
         this.link = link;
         this.description = description;
-        this.language = language;
-        this.pubDate = pubDate;
-        this.lastBuildDate = lastBuildDate;
-        this.docs = docs;
-        this.generator = generator;
-        this.managingEditor = managingEditor;
-        this.webMaster = webMaster;
+        this.dates = dates;
+        this.details = details;
         this.items = items;
     }
+
+    List<RssItem> items(Settings settings) {
+        var now = ZonedDateTime.now();
+        Predicate<RssItem> inSelectedTime = item -> (item.pubDate == null ? now : item.pubDate).isAfter(now.minusDays(settings.lastDays));
+        return items.stream().filter(inSelectedTime).collect(Collectors.toList());
+    }
+
+    boolean shouldBeShown(Settings settings) { return items(settings).size() > 0 || settings.showEmptyFeeds; }
 }
