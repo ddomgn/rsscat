@@ -18,11 +18,14 @@
  */
 package ddomgn.rsscat;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -40,28 +43,8 @@ class SettingsTest {
     }
 
     @Test
-    @DisplayName("Short help option")
-    public void shortHelpOption() throws Exception {
-        String[] args = { "-h" };
-        Settings settings = new Settings();
-        assertFalse(settings.helpRequired);
-        settings.parseCmdOptions(args);
-        assertTrue(settings.helpRequired);
-    }
-
-    @Test
-    @DisplayName("Long help option")
-    public void longHelpOption() throws Exception {
-        String[] args = { "-help" };
-        Settings settings = new Settings();
-        assertFalse(settings.helpRequired);
-        settings.parseCmdOptions(args);
-        assertTrue(settings.helpRequired);
-    }
-
-    @Test
     @DisplayName("Last days option")
-    public void lastDaysOption() throws Exception {
+    public void lastDaysOption() {
         String[] args = { "-last-days", "3" };
         Settings settings = new Settings();
         assertEquals(Integer.MAX_VALUE, settings.lastDays);
@@ -85,7 +68,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Load feeds in parallel option")
-    public void loadFeedsInParallelOption() throws Exception {
+    public void loadFeedsInParallelOption() {
         String[] args = { "-p" };
         Settings settings = new Settings();
         assertFalse(settings.loadFeedsInParallel);
@@ -98,7 +81,7 @@ class SettingsTest {
 
     @Test
     @DisplayName("Read feed URLs from a file")
-    public void readFeedUrlsFromFile() throws Exception {
+    public void readFeedUrlsFromFile() {
         String[] args = { "-f", getClass().getResource("/feeds.txt").toString() };
         Settings settings = new Settings();
         assertTrue(settings.feedUrls().collect(Collectors.toList()).isEmpty());
@@ -111,12 +94,28 @@ class SettingsTest {
 
     @Test
     @DisplayName("Hide feed description")
-    public void hideFeedDescription() throws Exception {
+    public void hideFeedDescription() {
         String[] args = { "-D" };
         Settings settings = new Settings();
         assertFalse(settings.hideFeedDescription);
 
         settings.parseCmdOptions(args);
         assertTrue(settings.hideFeedDescription);
+    }
+
+    @Test
+    @DisplayName("Determine if help should be printed")
+    public void shouldPrintTest() {
+        Function<String[], Settings> parseOpts = (args) -> new Settings().parseCmdOptions(args);
+        Arrays.stream(new String[][] {
+                new String[] { "-D", "-e", "-last-days", "1", "-p", "file:///dev/null" },
+        }).map(parseOpts).map(Settings::shouldPrintHelp).forEach(Assertions::assertFalse);
+        Arrays.stream(new String[][] {
+                new String[] {},
+                new String[] { "-h" },
+                new String[] { "-help" },
+                new String[] { "-f", getClass().getResource("/feeds.txt").toString(), "-h" },
+                new String[] { "file:///dev/null", "-h" },
+        }).map(parseOpts).map(Settings::shouldPrintHelp).forEach(Assertions::assertTrue);
     }
 }

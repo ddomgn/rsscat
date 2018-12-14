@@ -25,7 +25,7 @@ public class App {
     }
 
     private void doStuff(Settings settings) {
-        if (settings.helpRequired) {
+        if (settings.shouldPrintHelp()) {
             settings.printHelp();
         } else {
             System.out.println(settings
