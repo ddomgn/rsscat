@@ -18,6 +18,9 @@
  */
 package ddomgn.rsscat;
 
+import java.net.URL;
+import java.util.function.Function;
+
 public class App {
 
     public static void main(String[] args) throws Exception {
@@ -28,14 +31,29 @@ public class App {
         if (settings.shouldPrintHelp()) {
             settings.printHelp();
         } else {
-            System.out.println(settings
+            String output = settings
                     .feedUrls()
-                    .map(url -> new RssFeed(url).read())
-                    .filter(channel -> channel.shouldBeShown(settings))
-                    .map(channel -> Printer.printChannel(channel, settings))
+                    .map(urlToChannel)
+                    .filter(v -> v.isRight() || v.getLeft().orElseThrow().shouldBeShown(settings))
+                    .map(result -> {
+                        if (result.isLeft()) {
+                            return result.getLeft().map(v -> Printer.printChannel(v, settings)).orElse("");
+                        } else {
+                            Throwable error = result.getRight().orElse(new Error("Unknown error"));
+                            return error.getMessage() + ":\n" + error.getCause();
+                        }
+                    })
                     .reduce((a, b) -> a + "\n" + b)
-                    .orElse("")
-            );
+                    .orElse("");
+            System.out.println(output);
         }
     }
+
+    private Function<URL, Either<RssChannel, Throwable>> urlToChannel = url -> {
+        try {
+            return Either.left(new RssFeed(url).read());
+        } catch (Throwable e) {
+            return Either.right(new Error("Failed to read " + url, e));
+        }
+    };
 }
